@@ -1,5 +1,5 @@
 
-import { BaseDjwtError } from './web3_error_base.js';
+import { BaseDjwtError } from './baseDjwtError.js';
 
 export class TokenExpiredError extends BaseDjwtError {
 	public expiredAt : number;

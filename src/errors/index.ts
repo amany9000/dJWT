@@ -1,3 +1,3 @@
 ﻿
-export * from './web3_error_base.js';
+export * from './baseDjwtError';
 export * from './jwt.js';

@@ -5,6 +5,7 @@
     "module": "es2015",
     "declaration": true,
     "outDir": "./dist",
+    "moduleResolution": "Node",
     "noEmit": false,
     "strict": true,
     "noImplicitAny": true,
