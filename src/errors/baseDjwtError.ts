@@ -6,21 +6,16 @@ export interface DjwtError extends Error {
 }
 
 export abstract class BaseDjwtError extends Error implements DjwtError {
-	public readonly name: string;
-	public readonly code: number;
-	public stack: string | undefined;
+	public override readonly name: string;
+	public readonly code?: number;
+	public override stack: string | undefined;
 	public innerError: Error | Error[] | undefined;
 
 	public constructor(msg?: string, innerError?: Error | Error[]) {
 		super(msg);
 		this.innerError = innerError;
 		this.name = this.constructor.name;
-
-		if (typeof Error.captureStackTrace === 'function') {
-			Error.captureStackTrace(new.target.constructor);
-		} else {
-			this.stack = new Error().stack;
-		}
+		this.stack = new Error().stack;
 	}
 
 	public static convertToString(value: Error) {
