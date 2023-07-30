@@ -13,3 +13,9 @@ export type SignerOptions = {
     keyid: string;
     mutatePayload: boolean;
 };
+
+
+export type JwsVerifyOptions = {
+    encoding: ((this: any, key: string, value: any) => any);
+    json : boolean;
+};
