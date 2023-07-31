@@ -44,13 +44,13 @@ function payloadFromJWS(jwsSig : string, encoding? : BufferEncoding) {
   return Buffer.from(payload, "base64").toString(encoding);
 }
 
-function isValidJws(string) {
+export function isValidJws(string) {
   return JWS_REGEX.test(string) && !!headerFromJWS(string);
 }
 
-function verify(jwsSig, interfaceLib) {
+export function verifyJws(jwsSig, interfaceLib) {
 
-  var jwsSigObj = decode(jwsSig);
+  var jwsSigObj = decodeJws(jwsSig);
   //console.log("jwsSigobj", jwsSigObj)
 
   jwsSig = toString(jwsSig);
@@ -60,7 +60,7 @@ function verify(jwsSig, interfaceLib) {
   return verifySignature(securedInput, signature, interfaceLib);
 }
 
-function decode(jwsSig, opts: JwsVerifyOptions = {"json" : false, "encoding" : () => {}}) {
+export function decodeJws(jwsSig, opts: JwsVerifyOptions = {"json" : false, "encoding" : () => {}}) {
   //opts = opts || {};
   jwsSig = toString(jwsSig);
 
@@ -82,6 +82,3 @@ function decode(jwsSig, opts: JwsVerifyOptions = {"json" : false, "encoding" : (
     signature: signatureFromJWS(jwsSig)
   };
 }
-
-
-module.exports = { decode, verify, isValidJws };

@@ -1,7 +1,8 @@
-import {jws} from "./jws";
+import {decodeJws} from "./jws";
+import type {JwsVerifyOptions} from "./types"
 
 export function decode(jwt: string, isComplete : boolean) {
-  var decoded = jws.decode(jwt, isComplete);
+  var decoded = decodeJws(jwt);
   if (!decoded) { return null; }
   var payload = decoded.payload;
 
