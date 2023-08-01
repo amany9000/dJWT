@@ -19,7 +19,7 @@ function jwsSecuredInput(header, payload, encoding) {
   return util.format("%s.%s", encodedHeader, encodedPayload);
 }
 
-function sign(opts) {
+export function signJws(opts) {
   var header = opts.header;
   var payload = opts.payload;
   var encoding = opts.encoding;
@@ -28,5 +28,3 @@ function sign(opts) {
   var signature = signPayload(securedInput, keyStore);
   return util.format("%s.%s", securedInput, signature);
 }
-
-module.exports = { sign };
