@@ -2,7 +2,7 @@ import {includes, isBoolean, isInteger, isNumber, isPlainObject, isString, once}
 
 import {timespan} from "./utils";
 import {signJws} from "./jws";
-import type {SignerOptions} from "./types"
+import type {SignerOptions, Payload} from "./types"
 
 const SUPPORTED_ALGS = ['ECS256K1', 'none'];
 
@@ -35,12 +35,8 @@ const options_for_objects = [
   'jwtid',
 ];
 
-export function sign(payload : Object | Buffer, options: SignerOptions) {
-  if (typeof options === 'function') {
-    options = {};
-  } else {
-    options = options || {};
-  }
+export function sign(payload : Payload, options : SignerOptions) {
+  options = options || {};
 
   const isObjectPayload = typeof payload === 'object' &&
                         !Buffer.isBuffer(payload);
@@ -70,7 +66,7 @@ export function sign(payload : Object | Buffer, options: SignerOptions) {
     }
   } else {
     const invalid_options = options_for_objects.filter(function (opt) {
-      return typeof options[opt] !== 'undefined';
+      return typeof options[opt as keyof object] !== 'undefined';
     });
 
     if (invalid_options.length > 0) {
@@ -128,11 +124,11 @@ export function sign(payload : Object | Buffer, options: SignerOptions) {
 
   Object.keys(options_to_payload).forEach(function (key) {
     const claim = options_to_payload[key as keyof object];
-    if (typeof options[key] !== 'undefined') {
+    if (typeof options[key as keyof object] !== 'undefined') {
       if (typeof payload[claim] !== 'undefined') {
         return failure(new Error('Bad "options.' + key + '" option. The payload already has an "' + claim + '" property.'));
       }
-      payload[claim] = options[key];
+      payload[claim as keyof object] = options[key as keyof object];
     }
   });
 
