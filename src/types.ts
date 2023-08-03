@@ -20,6 +20,12 @@ export type Payload = {
     exp: number;
 };
 
+export type Header = {
+    alg: string;
+    typ?: string;
+    kid: string;
+};
+
 export type JwsVerifyOptions = {
     encoding: ((this: any, key: string, value: any) => any);
     json : boolean;

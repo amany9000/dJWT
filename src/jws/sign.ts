@@ -3,6 +3,7 @@ import { Buffer } from "buffer";
 import {toString} from  "./toString";
 import * as util from "util";
 import {signPayload} from "./jwa";
+import type {Payload, Header} from "../types"
 
 function base64url(string: string, encoding: BufferEncoding) {
   return Buffer.from(string, encoding)
@@ -19,12 +20,8 @@ function jwsSecuredInput(header : object, payload : object, encoding: BufferEnco
   return util.format("%s.%s", encodedHeader, encodedPayload);
 }
 
-export function signJws(opts) {
-  var header = opts.header;
-  var payload = opts.payload;
-  var encoding = opts.encoding;
-  var keyStore = opts.keyStore;
+export function signJws(header: Header, payload: Payload, encoding: BufferEncoding) {
   var securedInput = jwsSecuredInput(header, payload, encoding);
-  var signature = signPayload(securedInput, keyStore);
+  var signature = signPayload(securedInput);
   return util.format("%s.%s", securedInput, signature);
 }

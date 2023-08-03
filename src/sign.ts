@@ -2,7 +2,7 @@ import {includes, isBoolean, isInteger, isNumber, isPlainObject, isString, once}
 
 import {timespan} from "./utils";
 import {signJws} from "./jws";
-import type {SignerOptions, Payload} from "./types"
+import type {SignerOptions, Payload, Header} from "./types"
 
 const SUPPORTED_ALGS = ['ECS256K1', 'none'];
 
@@ -41,7 +41,7 @@ export function sign(payload : Payload, options : SignerOptions) {
   const isObjectPayload = typeof payload === 'object' &&
                         !Buffer.isBuffer(payload);
 
-  const header = Object.assign({
+  const header : Header = Object.assign({
     alg: options.algorithm || 'HS256',
     typ: isObjectPayload ? 'JWT' : undefined,
     kid: options.keyid
@@ -134,6 +134,6 @@ export function sign(payload : Payload, options : SignerOptions) {
 
   const encoding = options.encoding || 'utf8';
 
-  let signature = signJws({header: header, payload: payload, encoding: encoding});
+  let signature = signJws(header, payload, encoding as BufferEncoding);
   return signature
 };

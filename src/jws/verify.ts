@@ -6,7 +6,7 @@ import type {JwsVerifyOptions} from "../types"
 
 const JWS_REGEX = /^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/;
 
-function isObject(thing) {
+function isObject(thing: any) {
   return Object.prototype.toString.call(thing) === "[object Object]";
 }
 
@@ -19,16 +19,16 @@ function safeJsonParse(thing) {
   }
 }
 
-function headerFromJWS(jwsSig) {
+function headerFromJWS(jwsSig: string) {
   var encodedHeader = jwsSig.split(".", 1)[0];
   return safeJsonParse(Buffer.from(encodedHeader, "base64").toString("binary"));
 }
 
-function securedInputFromJWS(jwsSig) {
+function securedInputFromJWS(jwsSig: string) {
   return jwsSig.split(".", 2).join(".");
 }
 
-function signatureFromJWS(jwsSig) {
+function signatureFromJWS(jwsSig: string) {
   return jwsSig.split(".")[2];
 }
 
@@ -48,7 +48,7 @@ export function isValidJws(string) {
   return JWS_REGEX.test(string) && !!headerFromJWS(string);
 }
 
-export function verifyJws(jwsSig, interfaceLib) {
+export function verifyJws(jwsSig: string, interfaceLib) {
 
   var jwsSigObj = decodeJws(jwsSig);
   //console.log("jwsSigobj", jwsSigObj)
@@ -60,7 +60,7 @@ export function verifyJws(jwsSig, interfaceLib) {
   return verifySignature(securedInput, signature, interfaceLib);
 }
 
-export function decodeJws(jwsSig, opts: JwsVerifyOptions = {"json" : false, "encoding" : () => {}}) {
+export function decodeJws(jwsSig: string, opts: JwsVerifyOptions = {"json" : false, "encoding" : () => {}}) {
   //opts = opts || {};
   jwsSig = toString(jwsSig);
 
