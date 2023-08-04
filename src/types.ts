@@ -16,8 +16,8 @@ export type SignerOptions = {
 
 export type Payload = {
     iat?: number;
-    nbf: number;
-    exp: number;
+    nbf: number | string;
+    exp: number | string;
 };
 
 export type Header = {

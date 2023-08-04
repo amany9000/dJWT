@@ -1,7 +1,8 @@
 
 import { Buffer } from "buffer";
-import {toString} from  "./toString";
-import {verifySignature} from "jwa";
+import { jwaVerify } from "jwa";
+import {JwsDecodingError, JwsVerifyError} from "../errors";
+
 import type {JwsVerifyOptions} from "../types"
 
 const JWS_REGEX = /^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/;
@@ -10,7 +11,7 @@ function isObject(thing: any) {
   return Object.prototype.toString.call(thing) === "[object Object]";
 }
 
-function safeJsonParse(thing) {
+function safeJsonParse(thing: any) {
   if (isObject(thing)) return thing;
   try {
     return JSON.parse(thing);
@@ -21,7 +22,11 @@ function safeJsonParse(thing) {
 
 function headerFromJWS(jwsSig: string) {
   var encodedHeader = jwsSig.split(".", 1)[0];
-  return safeJsonParse(Buffer.from(encodedHeader, "base64").toString("binary"));
+
+  if(encodedHeader)
+    return safeJsonParse(Buffer.from(encodedHeader, "base64").toString("binary"));
+  else
+    throw new JwsDecodingError("Error decoding jws from this jwt", encodedHeader)
 }
 
 function securedInputFromJWS(jwsSig: string) {
@@ -35,34 +40,36 @@ function signatureFromJWS(jwsSig: string) {
 function signatureObjectFromJws(jwsSig: string, encoding?: BufferEncoding) {
   encoding = encoding || "utf8";
   var payload = jwsSig.split(".")[2];
-  return safeJsonParse(Buffer.from(payload, "base64").toString(encoding));
+  if(payload)
+    return safeJsonParse(Buffer.from(payload, "base64").toString(encoding));
+  else
+    throw new JwsDecodingError("Error decoding jws", jwsSig)
 }
 
 function payloadFromJWS(jwsSig : string, encoding? : BufferEncoding) {
   encoding = encoding || "utf8";
   var payload = jwsSig.split(".")[1];
-  return Buffer.from(payload, "base64").toString(encoding);
+  if(payload)
+    return Buffer.from(payload, "base64").toString(encoding);
+  else
+    throw new JwsDecodingError("Error decoding jws", jwsSig)
 }
 
-export function isValidJws(string) {
+export function isValidJws(string: string) {
   return JWS_REGEX.test(string) && !!headerFromJWS(string);
 }
 
-export function verifyJws(jwsSig: string, interfaceLib) {
-
-  var jwsSigObj = decodeJws(jwsSig);
-  //console.log("jwsSigobj", jwsSigObj)
-
-  jwsSig = toString(jwsSig);
-  var signature = signatureObjectFromJws(jwsSig);
+function jwsVerify(jwsSig: string, algorithm: string) {
+  if (!algorithm) {
+    throw new JwsVerifyError("Missing algorithm parameter for jws.verify");
+  }
+  var signature = signatureFromJWS(jwsSig);
   var securedInput = securedInputFromJWS(jwsSig);
-  
-  return verifySignature(securedInput, signature, interfaceLib);
+  return jwaVerify(securedInput, signature, algorithm);
 }
 
 export function decodeJws(jwsSig: string, opts: JwsVerifyOptions = {"json" : false, "encoding" : () => {}}) {
   //opts = opts || {};
-  jwsSig = toString(jwsSig);
 
   if (!isValidJws(jwsSig))
     return null;

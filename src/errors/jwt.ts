@@ -19,3 +19,12 @@ export class NotBeforeError extends BaseDjwtError {
 		this.date = date;
 	}
 }
+
+export class TimespanDecodingError extends BaseDjwtError {
+	public time : number | string;
+
+	public constructor(message : string, date : number | string) {
+		super(message);
+		this.time = date;
+	}
+}

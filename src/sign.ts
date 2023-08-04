@@ -100,25 +100,25 @@ export function sign(payload : Payload, options : SignerOptions) {
 
   if (typeof options.notBefore !== 'undefined') {
     try {
+      if (payload.nbf === undefined) {
+        return failure(new Error('"notBefore" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'));
+      }
       payload.nbf = timespan(options.notBefore, timestamp);
     }
     catch (err) {
       return failure(err);
     }
-    if (typeof payload.nbf === 'undefined') {
-      return failure(new Error('"notBefore" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'));
-    }
   }
 
   if (typeof options.expiresIn !== 'undefined' && typeof payload === 'object') {
     try {
+      if (payload.exp === undefined) {
+        return failure(new Error('"expiresIn" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'));
+      }
       payload.exp = timespan(options.expiresIn, timestamp);
     }
     catch (err) {
       return failure(err);
-    }
-    if (typeof payload.exp === 'undefined') {
-      return failure(new Error('"expiresIn" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'));
     }
   }
 

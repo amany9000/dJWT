@@ -1,5 +1,4 @@
 import {decodeJws} from "./jws";
-import type {JwsVerifyOptions} from "./types"
 
 export function decode(jwt: string, isComplete : boolean) {
   var decoded = decodeJws(jwt);
