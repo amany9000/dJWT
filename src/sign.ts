@@ -1,4 +1,3 @@
-import {includes, isBoolean, isInteger, isNumber, isPlainObject, isString, once} from "lodash";
 
 import {timespan} from "./utils";
 import {signJws} from "./jws";
@@ -35,7 +34,7 @@ const options_for_objects = [
   'jwtid',
 ];
 
-export function sign(payload : Payload, options : SignerOptions) {
+export function sign(payload : Payload, options?: SignerOptions) {
   options = options || {};
 
   const isObjectPayload = typeof payload === 'object' &&

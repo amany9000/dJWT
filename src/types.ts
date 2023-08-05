@@ -12,6 +12,22 @@ export type SignerOptions = {
     noTimestamp: boolean;
     keyid: string;
     mutatePayload: boolean;
+} | {};
+
+
+export type VerifierOptions = {
+    audience: string;
+    issuer: string;
+    subject: string;
+    jwtid: string;
+    clockTimestamp: number;
+    nonce: string;
+    ignoreNotBefore: boolean;
+    clockTolerance: number;
+    ignoreExpiration: number;
+    maxAge: number;
+    complete: boolean;
+    algorithms: [string];
 };
 
 export type Payload = {

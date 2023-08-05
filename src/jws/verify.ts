@@ -59,7 +59,7 @@ export function isValidJws(string: string) {
   return JWS_REGEX.test(string) && !!headerFromJWS(string);
 }
 
-function jwsVerify(jwsSig: string, algorithm: string) {
+export function jwsVerify(jwsSig: string, algorithm: string) {
   if (!algorithm) {
     throw new JwsVerifyError("Missing algorithm parameter for jws.verify");
   }
