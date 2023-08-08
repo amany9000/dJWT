@@ -12,7 +12,7 @@ export type SignerOptions = {
     noTimestamp: boolean;
     keyid: string;
     mutatePayload: boolean;
-} | {};
+};
 
 
 export type VerifierOptions = {
@@ -39,8 +39,14 @@ export type Payload = {
 export type Header = {
     alg: string;
     typ?: string;
-    kid: string;
+    kid?: string;
 };
+
+export type Token = {
+    header?: Header,
+    payload: string | Payload,
+    signature: string
+  };
 
 export type JwsVerifyOptions = {
     encoding: ((this: any, key: string, value: any) => any);

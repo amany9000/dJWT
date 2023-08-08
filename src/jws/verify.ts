@@ -3,7 +3,7 @@ import { Buffer } from "buffer";
 import { jwaVerify } from "jwa";
 import {JwsDecodingError, JwsVerifyError} from "../errors";
 
-import type {JwsVerifyOptions} from "../types"
+import type {JwsVerifyOptions, Token} from "../types"
 
 const JWS_REGEX = /^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/;
 
@@ -34,7 +34,11 @@ function securedInputFromJWS(jwsSig: string) {
 }
 
 function signatureFromJWS(jwsSig: string) {
-  return jwsSig.split(".")[2];
+  const sig = jwsSig.split(".")[2]
+  if(sig)
+    return sig
+  
+  throw new JwsDecodingError("Signature not present in token", jwsSig)
 }
 
 function signatureObjectFromJws(jwsSig: string, encoding?: BufferEncoding) {
@@ -68,7 +72,10 @@ export function jwsVerify(jwsSig: string, algorithm: string) {
   return jwaVerify(securedInput, signature, algorithm);
 }
 
-export function decodeJws(jwsSig: string, opts: JwsVerifyOptions = {"json" : false, "encoding" : () => {}}) {
+export function decodeJws(
+  jwsSig: string,
+  opts: JwsVerifyOptions = {"json" : false, "encoding" : () => {}}
+  ) : Token | null {
   //opts = opts || {};
 
   if (!isValidJws(jwsSig))
@@ -87,5 +94,5 @@ export function decodeJws(jwsSig: string, opts: JwsVerifyOptions = {"json" : fal
     header: header,
     payload: payload,
     signature: signatureFromJWS(jwsSig)
-  };
+  } as Token;
 }

@@ -28,3 +28,10 @@ export class TimespanDecodingError extends BaseDjwtError {
 		this.time = date;
 	}
 }
+
+export class VerificationError extends BaseDjwtError {
+
+	public constructor(message : string) {
+		super(message);
+	}
+}

@@ -34,14 +34,14 @@ const options_for_objects = [
   'jwtid',
 ];
 
-export function sign(payload : Payload, options?: SignerOptions) {
-  options = options || {};
+export function sign(payload : Payload, options?: Partial<SignerOptions>) {
 
+  options = options || {};
   const isObjectPayload = typeof payload === 'object' &&
                         !Buffer.isBuffer(payload);
 
   const header : Header = Object.assign({
-    alg: options.algorithm || 'HS256',
+    alg: options.algorithm !== undefined ? options.algorithm  : 'HS256',
     typ: isObjectPayload ? 'JWT' : undefined,
     kid: options.keyid
   }, options.header);
@@ -65,7 +65,7 @@ export function sign(payload : Payload, options?: SignerOptions) {
     }
   } else {
     const invalid_options = options_for_objects.filter(function (opt) {
-      return typeof options[opt as keyof object] !== 'undefined';
+      return options !== undefined && options[opt as keyof object] !== undefined;
     });
 
     if (invalid_options.length > 0) {
@@ -123,8 +123,8 @@ export function sign(payload : Payload, options?: SignerOptions) {
 
   Object.keys(options_to_payload).forEach(function (key) {
     const claim = options_to_payload[key as keyof object];
-    if (typeof options[key as keyof object] !== 'undefined') {
-      if (typeof payload[claim] !== 'undefined') {
+    if (options !== undefined && options[key as keyof object] !== undefined) {
+      if (payload[claim] !== undefined) {
         return failure(new Error('Bad "options.' + key + '" option. The payload already has an "' + claim + '" property.'));
       }
       payload[claim as keyof object] = options[key as keyof object];

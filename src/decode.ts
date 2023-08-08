@@ -1,26 +1,32 @@
 import {decodeJws} from "./jws";
+import {Token, Payload} from "./types"
 
-export function decode(jwt: string, isComplete : boolean) {
+
+export function decode(jwt: string, returnHeader : boolean) : Token | null{
   var decoded = decodeJws(jwt);
   if (!decoded) { return null; }
-  var payload = decoded.payload;
+  
+  var payload: Payload | string = decoded.payload;
 
   //try parse the payload
   if(typeof payload === 'string') {
     try {
-      var obj = JSON.parse(payload);
-      if(obj !== null && typeof obj === 'object') {
+      var obj : Payload = JSON.parse(payload);
+      if(obj !== null) {
         payload = obj;
       }
     } catch (e) { }
   }
 
-  if (isComplete === true) {
+  if (returnHeader === true)
     return {
       header: decoded.header,
       payload: payload,
       signature: decoded.signature
     };
-  }
-  return payload;
+  else
+    return {
+      payload: payload,
+      signature: decoded.signature
+    };
 };
