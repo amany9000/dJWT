@@ -1,9 +1,8 @@
-
 import { Buffer } from "buffer";
-import {toString} from  "./toString";
+import { toString } from "./toString";
 import * as util from "util";
-import {signPayload} from "./jwa";
-import type {Payload, Header} from "../types"
+import { signPayload } from "../jwa";
+import type { Payload, Header, Signer } from "../types";
 
 function base64url(string: string, encoding: BufferEncoding) {
   return Buffer.from(string, encoding)
@@ -13,15 +12,24 @@ function base64url(string: string, encoding: BufferEncoding) {
     .replace(/\//g, "_");
 }
 
-function jwsSecuredInput(header : object, payload : object, encoding: BufferEncoding) {
+function jwsSecuredInput(
+  header: object,
+  payload: object,
+  encoding: BufferEncoding
+) {
   encoding = encoding || "utf8";
   var encodedHeader = base64url(toString(header), "binary");
   var encodedPayload = base64url(toString(payload), encoding);
   return util.format("%s.%s", encodedHeader, encodedPayload);
 }
 
-export function signJws(header: Header, payload: Payload, encoding: BufferEncoding) {
+export async function signJws(
+  header: Header,
+  payload: Payload,
+  signer: Signer,
+  encoding: BufferEncoding
+) {
   var securedInput = jwsSecuredInput(header, payload, encoding);
-  var signature = signPayload(securedInput);
-  return util.format("%s.%s", securedInput, signature);
+  var signature = await signPayload(securedInput, signer);
+  return util.format("%s.%s", securedInput, base64url(signature, encoding));
 }
