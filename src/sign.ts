@@ -1,10 +1,8 @@
+import { timespan } from "./utils";
+import { signJws } from "./jws";
+import type { SignerOptions, Payload, Header, Signer } from "./types";
 
-import {timespan} from "./utils";
-import {signJws} from "./jws";
-import type {SignerOptions, Payload, Header} from "./types"
-
-const SUPPORTED_ALGS = ['ECS256K1', 'none'];
-
+//const SUPPORTED_ALGS = ["ECS256K1", "none"];
 
 // TODO, add zod.
 /*
@@ -17,77 +15,99 @@ function validatePayload(payload) {
 }
 */
 
-const options_to_payload= {
-  audience: 'aud',
-  issuer: 'iss',
-  subject: 'sub',
-  jwtid: 'jti'
+const options_to_payload = {
+  audience: "aud",
+  issuer: "iss",
+  subject: "sub",
+  jwtid: "jti",
 };
 
 const options_for_objects = [
-  'expiresIn',
-  'notBefore',
-  'noTimestamp',
-  'audience',
-  'issuer',
-  'subject',
-  'jwtid',
+  "expiresIn",
+  "notBefore",
+  "noTimestamp",
+  "audience",
+  "issuer",
+  "subject",
+  "jwtid",
 ];
 
-export function sign(payload : Payload, options?: Partial<SignerOptions>) {
-
+export async function sign(payload: Payload, signer : Signer, options?: Partial<SignerOptions>) {
   options = options || {};
-  const isObjectPayload = typeof payload === 'object' &&
-                        !Buffer.isBuffer(payload);
+  const isObjectPayload =
+    typeof payload === "object" && !Buffer.isBuffer(payload);
 
-  const header : Header = Object.assign({
-    alg: options.algorithm !== undefined ? options.algorithm  : 'HS256',
-    typ: isObjectPayload ? 'JWT' : undefined,
-    kid: options.keyid
-  }, options.header);
+  const header: Header = Object.assign(
+    {
+      alg: options.algorithm !== undefined ? options.algorithm : "HS256",
+      typ: isObjectPayload ? "JWT" : undefined,
+      kid: options.keyid,
+    },
+    options.header
+  );
 
-  function failure(err : unknown) {
+  function failure(err: unknown) {
     throw err;
   }
 
-
-  if (typeof payload === 'undefined') {
-    return failure(new Error('payload is required'));
+  if (typeof payload === "undefined") {
+    return failure(new Error("payload is required"));
   } else if (isObjectPayload) {
     try {
       //validatePayload(payload);
-    }
-    catch (error) {
+    } catch (error) {
       return failure(error);
     }
     if (!options.mutatePayload) {
-      payload = Object.assign({},payload);
+      payload = Object.assign({}, payload);
     }
   } else {
     const invalid_options = options_for_objects.filter(function (opt) {
-      return options !== undefined && options[opt as keyof object] !== undefined;
+      return (
+        options !== undefined && options[opt as keyof object] !== undefined
+      );
     });
 
     if (invalid_options.length > 0) {
-      return failure(new Error('invalid ' + invalid_options.join(',') + ' option for ' + (typeof payload ) + ' payload'));
+      return failure(
+        new Error(
+          "invalid " +
+            invalid_options.join(",") +
+            " option for " +
+            typeof payload +
+            " payload"
+        )
+      );
     }
   }
 
-  if (typeof payload.exp !== 'undefined' && typeof options.expiresIn !== 'undefined') {
-    return failure(new Error('Bad "options.expiresIn" option the payload already has an "exp" property.'));
+  if (
+    typeof payload.exp !== "undefined" &&
+    typeof options.expiresIn !== "undefined"
+  ) {
+    return failure(
+      new Error(
+        'Bad "options.expiresIn" option the payload already has an "exp" property.'
+      )
+    );
   }
 
-  if (typeof payload.nbf !== 'undefined' && typeof options.notBefore !== 'undefined') {
-    return failure(new Error('Bad "options.notBefore" option the payload already has an "nbf" property.'));
+  if (
+    typeof payload.nbf !== "undefined" &&
+    typeof options.notBefore !== "undefined"
+  ) {
+    return failure(
+      new Error(
+        'Bad "options.notBefore" option the payload already has an "nbf" property.'
+      )
+    );
   }
 
   try {
     //validateOptions(options);
-  }
-  catch (error) {
+  } catch (error) {
     return failure(error);
   }
-
 
   const timestamp = payload.iat || Math.floor(Date.now() / 1000);
 
@@ -97,26 +117,32 @@ export function sign(payload : Payload, options?: Partial<SignerOptions>) {
     payload.iat = timestamp;
   }
 
-  if (typeof options.notBefore !== 'undefined') {
+  if (typeof options.notBefore !== "undefined") {
     try {
       if (payload.nbf === undefined) {
-        return failure(new Error('"notBefore" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'));
+        return failure(
+          new Error(
+            '"notBefore" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
+          )
+        );
       }
       payload.nbf = timespan(options.notBefore, timestamp);
-    }
-    catch (err) {
+    } catch (err) {
       return failure(err);
     }
   }
 
-  if (typeof options.expiresIn !== 'undefined' && typeof payload === 'object') {
+  if (typeof options.expiresIn !== "undefined" && typeof payload === "object") {
     try {
       if (payload.exp === undefined) {
-        return failure(new Error('"expiresIn" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'));
+        return failure(
+          new Error(
+            '"expiresIn" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
+          )
+        );
       }
       payload.exp = timespan(options.expiresIn, timestamp);
-    }
-    catch (err) {
+    } catch (err) {
       return failure(err);
     }
   }
@@ -125,14 +151,22 @@ export function sign(payload : Payload, options?: Partial<SignerOptions>) {
     const claim = options_to_payload[key as keyof object];
     if (options !== undefined && options[key as keyof object] !== undefined) {
       if (payload[claim] !== undefined) {
-        return failure(new Error('Bad "options.' + key + '" option. The payload already has an "' + claim + '" property.'));
+        return failure(
+          new Error(
+            'Bad "options.' +
+              key +
+              '" option. The payload already has an "' +
+              claim +
+              '" property.'
+          )
+        );
       }
       payload[claim as keyof object] = options[key as keyof object];
     }
   });
 
-  const encoding = options.encoding || 'utf8';
+  const encoding = options.encoding || "utf8";
 
-  let signature = signJws(header, payload, encoding as BufferEncoding);
-  return signature
-};
+  let signature = signJws(header, payload, signer, encoding as BufferEncoding);
+  return signature;
+}

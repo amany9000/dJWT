@@ -2,7 +2,7 @@ import {decodeJws} from "./jws";
 import {Token, Payload} from "./types"
 
 
-export function decode(jwt: string, returnHeader : boolean) : Token | null{
+export function decode(jwt: string, returnHeader? : boolean) : Token | null{
   var decoded = decodeJws(jwt);
   if (!decoded) { return null; }
   
@@ -18,7 +18,7 @@ export function decode(jwt: string, returnHeader : boolean) : Token | null{
     } catch (e) { }
   }
 
-  if (returnHeader === true)
+  if (returnHeader)
     return {
       header: decoded.header,
       payload: payload,

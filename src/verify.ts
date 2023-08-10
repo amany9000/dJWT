@@ -1,7 +1,7 @@
 import { decode } from "./decode";
 import { timespan } from "./utils";
 import { jwsVerify } from "./jws";
-import { VerifierOptions, Token, Payload } from "./types";
+import { VerifierOptions, Token } from "./types";
 import { VerificationError, TokenExpiredError, NotBeforeError } from "./errors";
 
 export function verify(jwtString: string, options: VerifierOptions) {

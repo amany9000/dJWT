@@ -30,12 +30,12 @@ export type VerifierOptions = {
 
 export type Payload = {
   iat?: number;
-  nbf: number | string;
+  nbf?: number | string;
   exp: number | string;
   sub?: string;
   jti?: string;
   nonce?: string;
-  aud: string | [string];
+  aud?: string | [string];
   iss: string;
 };
 
@@ -52,6 +52,8 @@ export type Token = {
 };
 
 export type JwsVerifyOptions = {
-  encoding: (this: any, key: string, value: any) => any;
+  encoding?: (this: any, key: string, value: any) => any;
   json: boolean;
 };
+
+export type Signer = (payload : string) => Promise<string>
