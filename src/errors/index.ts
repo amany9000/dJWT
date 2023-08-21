@@ -1,4 +1,5 @@
 ﻿
 export * from './baseDjwtError';
-export * from './jwt.js';
-export * from './jws.js';
+export * from './jwt';
+export * from './jws';
+export *from './jwa';
