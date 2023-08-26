@@ -1,8 +1,8 @@
 import { Buffer } from "buffer";
-//import { jwaVerify } from "../jwa";
+import { jwaVerify } from "../jwa";
 import { JwsDecodingError, JwsVerifyError } from "../errors";
 
-import type { JwsVerifyOptions, Token } from "../types";
+import type { JwsVerifyOptions, Token, Verifier } from "../types";
 
 const JWS_REGEX = /^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/;
 
@@ -32,11 +32,11 @@ function headerFromJWS(jwsSig: string) {
       encodedHeader
     );
 }
-/*
+
 function securedInputFromJWS(jwsSig: string) {
   return jwsSig.split(".", 2).join(".");
 }
-*/
+
 function signatureFromJWS(jwsSig: string) {
   const sig = jwsSig.split(".")[2];
   if (sig) return sig;
@@ -66,31 +66,24 @@ export function isValidJws(string: string) {
   return JWS_REGEX.test(string) && !!headerFromJWS(string);
 }
 
-export function jwsVerify(jwsSig: string, algorithm: string) {
-  if (!algorithm) {
-    throw new JwsVerifyError("Missing algorithm parameter for jws.verify");
-  }
-  //var signature = signatureFromJWS(jwsSig);
-  //var securedInput = securedInputFromJWS(jwsSig);
-  return jwsSig //jwaVerify(securedInput, signature, algorithm);
+export function jwsVerify( verifierID: number, verifier: Verifier, jwsSig: string, address: string) {
+  var signature = signatureFromJWS(jwsSig);
+  var securedInput = securedInputFromJWS(jwsSig);
+  return jwaVerify(verifierID, verifier, securedInput, signature, address);
 }
 
 export function decodeJws(
   jwsSig: string,
-  opts: JwsVerifyOptions = { json: false, encoding: undefined}
+  opts: JwsVerifyOptions = { encoding: undefined}
 ): Token | null {
   //opts = opts || {};
 
   if (!isValidJws(jwsSig)) return null;
 
   var header = headerFromJWS(jwsSig);
-
   if (!header) return null;
 
-  var payload = payloadFromJWS(jwsSig);
-  if (header.typ === "JWT" || opts.json)
-    payload = JSON.parse(payload, opts.encoding);
-
+  var payload = JSON.parse(payloadFromJWS(jwsSig), opts.encoding);
   return {
     header: header,
     payload: payload,
