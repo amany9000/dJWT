@@ -2,15 +2,13 @@ export type SignerOptions = {
   expiresIn: number;
   notBefore: number;
   audience: string;
-  algorithm: string;
-  header: object;
+  algorithm: string = 0;
+  header: Header;
   encoding: string;
-  issuer: string;
   subject: string;
   jwtid: string;
   noTimestamp: boolean;
-  keyid: string;
-  mutatePayload: boolean;
+  verifierID: number = 0;
 };
 
 export type VerifierOptions = {
@@ -41,19 +39,20 @@ export type Payload = {
 
 export type Header = {
   alg: string;
-  typ?: string;
-  kid?: string;
+  verifierID: number;
 };
 
 export type Token = {
   header?: Header;
-  payload: string | Payload;
+  payload: Payload;
   signature: string;
 };
 
 export type JwsVerifyOptions = {
   encoding?: (this: any, key: string, value: any) => any;
-  json: boolean;
 };
 
-export type Signer = (payload : string) => Promise<string>
+export type Signer = (payload: string) => Promise<string>;
+
+export type Verifier = 
+  (payload: string, signature: string, address?: string) => Promise<boolean | string>;

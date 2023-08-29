@@ -1,10 +1,10 @@
 import { decode } from "./decode";
 import { timespan } from "./utils";
 import { jwsVerify } from "./jws";
-import { VerifierOptions, Token } from "./types";
-import { VerificationError, TokenExpiredError, NotBeforeError } from "./errors";
+import { VerifierOptions, Token, Verifier } from "./types";
+import { VerificationError, TokenExpiredError, NotBeforeError, JwsVerifyError } from "./errors";
 
-export function verify(jwtString: string, options: VerifierOptions) {
+export function verify(verifier: Verifier, jwtString: string, options: VerifierOptions) {
   //clone this object since we are going to mutate it.
   options = Object.assign({}, options);
 
@@ -45,7 +45,11 @@ export function verify(jwtString: string, options: VerifierOptions) {
   }
 
   if (!decodedToken) {
-    throw new VerificationError("invalid token");
+    throw new VerificationError("Invalid token");
+  }
+
+  if (!decodedToken.header) {
+    throw new VerificationError("Invalid token, header not present.");
   }
 
   const header = decodedToken.header;
@@ -53,7 +57,7 @@ export function verify(jwtString: string, options: VerifierOptions) {
   let valid;
 
   try {
-    valid = jwsVerify(jwtString, decodedToken.header!.alg);
+    valid = jwsVerify(decodedToken.header.verifierID, verifier, jwtString, decodedToken.payload.iss);
   } catch (e) {
     throw e;
   }
