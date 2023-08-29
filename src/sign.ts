@@ -2,7 +2,11 @@ import { timespan } from "./utils";
 import { signJws } from "./jws";
 import type { SignerOptions, Payload, Header, Signer } from "./types";
 
-//const SUPPORTED_ALGS = ["ECS256K1", "none"];
+/*
+Algo Names based on 
+https://www.iana.org/assignments/jose/jose.xhtml#web-signature-encryption-algorithms
+*/
+const SUPPORTED_ALGS = ["ES256K", "ED25519", "SR25519"];
 
 // TODO, add zod.
 /*
@@ -17,7 +21,6 @@ function validatePayload(payload) {
 
 const options_to_payload = {
   audience: "aud",
-  issuer: "iss",
   subject: "sub",
   jwtid: "jti",
 };
@@ -32,19 +35,21 @@ const options_for_objects = [
   "jwtid",
 ];
 
-export async function sign(payload: Payload, signer : Signer, options?: Partial<SignerOptions>) {
+export async function sign(payload: Payload, signer : Signer, issuerAddress: string, options?: Partial<SignerOptions>) {
   options = options || {};
   const isObjectPayload =
     typeof payload === "object" && !Buffer.isBuffer(payload);
-
-  const header: Header = Object.assign(
-    {
-      alg: options.algorithm !== undefined ? options.algorithm : "HS256",
-      typ: isObjectPayload ? "JWT" : undefined,
-      kid: options.keyid,
-    },
-    options.header
-  );
+  
+  if(!options.verifierID)
+    options.verifierID = 0;
+  
+  else if(options.verifierID <0 || options.verifierID > 1)
+    throw new Error("Verifier ID out of range: 0:2");
+  
+  const header: Header = Object.assign({
+    alg: options.algorithm ? options.algorithm : "ECS256K1",
+    verifierID: options.verifierID,
+  });
 
   function failure(err: unknown) {
     throw err;
@@ -58,10 +63,9 @@ export async function sign(payload: Payload, signer : Signer, options?: Partial<
     } catch (error) {
       return failure(error);
     }
-    if (!options.mutatePayload) {
-      payload = Object.assign({}, payload);
-    }
-  } else {
+    payload = Object.assign({}, payload);
+  } 
+  else {
     const invalid_options = options_for_objects.filter(function (opt) {
       return (
         options !== undefined && options[opt as keyof object] !== undefined
@@ -146,6 +150,8 @@ export async function sign(payload: Payload, signer : Signer, options?: Partial<
       return failure(err);
     }
   }
+
+  payload["iss"] = issuerAddress;
 
   Object.keys(options_to_payload).forEach(function (key) {
     const claim = options_to_payload[key as keyof object];
