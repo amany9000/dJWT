@@ -1,4 +1,4 @@
-import { BaseDjwtError } from './baseDjwtError.js';
+import { BaseDjwtError } from './baseDjwtError';
 
 export class JwsDecodingError extends BaseDjwtError {
 	public jwt? : string;

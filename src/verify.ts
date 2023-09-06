@@ -2,7 +2,7 @@ import { decode } from "./decode";
 import { timespan } from "./utils";
 import { jwsVerify } from "./jws";
 import { VerifierOptions, Token, Verifier } from "./types";
-import { VerificationError, TokenExpiredError, NotBeforeError, JwsVerifyError } from "./errors";
+import { VerificationError, TokenExpiredError, NotBeforeError } from "./errors";
 
 export function verify(verifier: Verifier, jwtString: string, options: VerifierOptions) {
   //clone this object since we are going to mutate it.
@@ -14,9 +14,9 @@ export function verify(verifier: Verifier, jwtString: string, options: VerifierO
 
   if (
     options.nonce !== undefined &&
-    (typeof options.nonce !== "string" || options.nonce.trim() === "")
+    (typeof options.nonce !== "number")
   ) {
-    throw new VerificationError("nonce must be a non-empty string");
+    throw new VerificationError("nonce must be a number");
   }
 
   const clockTimestamp =

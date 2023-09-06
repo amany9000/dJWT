@@ -1,5 +1,5 @@
 
-import { BaseDjwtError } from './baseDjwtError.js';
+import { BaseDjwtError } from './baseDjwtError';
 
 export class TokenExpiredError extends BaseDjwtError {
 	public expiredAt : number;

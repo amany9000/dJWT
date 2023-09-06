@@ -1,6 +1,6 @@
 import { Buffer } from "buffer";
 import { jwaVerify } from "../jwa";
-import { JwsDecodingError, JwsVerifyError } from "../errors";
+import { JwsDecodingError } from "../errors";
 
 import type { JwsVerifyOptions, Token, Verifier } from "../types";
 
