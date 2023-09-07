@@ -35,7 +35,7 @@ const options_for_objects = [
   "jwtid",
 ];
 
-export async function sign(payload: Payload, signer : Signer, issuerAddress: string, options?: Partial<SignerOptions>) {
+export async function sign(payload: Payload, signer : Signer, options?: Partial<SignerOptions>) {
   options = options || {};
   const isObjectPayload =
     typeof payload === "object" && !Buffer.isBuffer(payload);
@@ -47,7 +47,8 @@ export async function sign(payload: Payload, signer : Signer, issuerAddress: str
     throw new Error("Verifier ID out of range: 0:2");
   
   const header: Header = Object.assign({
-    alg: options.algorithm ? options.algorithm : "ECS256K1",
+    alg: options.algorithm && SUPPORTED_ALGS.includes(options.algorithm) 
+      ? options.algorithm : "ECS256K1",
     verifierID: options.verifierID,
   });
 
@@ -150,8 +151,6 @@ export async function sign(payload: Payload, signer : Signer, issuerAddress: str
       return failure(err);
     }
   }
-
-  payload["iss"] = issuerAddress;
 
   Object.keys(options_to_payload).forEach(function (key) {
     const claim = options_to_payload[key as keyof object];

@@ -17,7 +17,7 @@ export type VerifierOptions = {
   subject: string;
   jwtid: string;
   clockTimestamp: number;
-  nonce: string;
+  nonce: number;
   ignoreNotBefore: boolean;
   clockTolerance: number;
   ignoreExpiration: number;
@@ -27,14 +27,14 @@ export type VerifierOptions = {
 };
 
 export type Payload = {
+  iss: string;
+  nonce: number;
+  exp: number | string;
   iat?: number;
   nbf?: number | string;
-  exp: number | string;
   sub?: string;
   jti?: string;
-  nonce?: string;
   aud?: string | [string];
-  iss: string;
 };
 
 export type Header = {
