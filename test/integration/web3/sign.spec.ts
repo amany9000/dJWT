@@ -14,5 +14,6 @@ describe("Test for signing: sign()", () => {
 
         expect(token).not.toBe(void 0);
         expect(typeof(token)).toBe("string");
+        expect(token.split('.').length).toBe(3);
     });
 });

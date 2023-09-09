@@ -30,8 +30,24 @@ export class TimespanDecodingError extends BaseDjwtError {
 }
 
 export class VerificationError extends BaseDjwtError {
-
 	public constructor(message : string) {
 		super(message);
+	}
+}
+
+export class InvalidPayloadError extends BaseDjwtError {
+	public constructor(message : string) {
+		super(message);
+	}
+}
+
+export class InvalidOptionsError extends BaseDjwtError {	
+	public payloadValue? : string; 
+	public optionsValue? : string; 
+	
+	public constructor(message : string, payloadVal?: string, optionsVal?: string) {
+		super(message);
+		this.payloadValue = payloadVal;
+		this.optionsValue = optionsVal;
 	}
 }

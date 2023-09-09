@@ -1,5 +1,7 @@
 import { timespan } from "./utils";
 import { signJws } from "./jws";
+import { InvalidPayloadError, InvalidOptionsError } from "./errors";
+
 import type { SignerOptions, Payload, Header, Signer } from "./types";
 
 /*
@@ -52,18 +54,11 @@ export async function sign(payload: Payload, signer : Signer, options?: Partial<
     verifierID: options.verifierID,
   });
 
-  function failure(err: unknown) {
-    throw err;
-  }
-
   if (typeof payload === "undefined") {
-    return failure(new Error("payload is required"));
+    throw new InvalidPayloadError("payload is required");
   } else if (isObjectPayload) {
-    try {
-      //validatePayload(payload);
-    } catch (error) {
-      return failure(error);
-    }
+    // @TODO
+    //validatePayload(payload);
     payload = Object.assign({}, payload);
   } 
   else {
@@ -74,14 +69,14 @@ export async function sign(payload: Payload, signer : Signer, options?: Partial<
     });
 
     if (invalid_options.length > 0) {
-      return failure(
-        new Error(
-          "invalid " +
-            invalid_options.join(",") +
-            " option for " +
-            typeof payload +
-            " payload"
-        )
+      throw new InvalidOptionsError(
+        "invalid " +
+          invalid_options.join(",") +
+          " option for " +
+          typeof payload +
+          " payload",
+        invalid_options.join(","),
+        typeof payload
       );
     }
   }
@@ -90,10 +85,8 @@ export async function sign(payload: Payload, signer : Signer, options?: Partial<
     typeof payload.exp !== "undefined" &&
     typeof options.expiresIn !== "undefined"
   ) {
-    return failure(
-      new Error(
-        'Bad "options.expiresIn" option the payload already has an "exp" property.'
-      )
+    throw new InvalidOptionsError(
+      'Bad "options.expiresIn" option the payload already has an "exp" property.'
     );
   }
 
@@ -101,18 +94,13 @@ export async function sign(payload: Payload, signer : Signer, options?: Partial<
     typeof payload.nbf !== "undefined" &&
     typeof options.notBefore !== "undefined"
   ) {
-    return failure(
-      new Error(
-        'Bad "options.notBefore" option the payload already has an "nbf" property.'
-      )
+    throw new InvalidOptionsError(
+      'Bad "options.notBefore" option the payload already has an "nbf" property.'
     );
   }
 
-  try {
-    //validateOptions(options);
-  } catch (error) {
-    return failure(error);
-  }
+  // @TODO
+  //validateOptions(options);
 
   const timestamp = payload.iat || Math.floor(Date.now() / 1000);
 
@@ -123,47 +111,35 @@ export async function sign(payload: Payload, signer : Signer, options?: Partial<
   }
 
   if (typeof options.notBefore !== "undefined") {
-    try {
-      if (payload.nbf === undefined) {
-        return failure(
-          new Error(
-            '"notBefore" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
-          )
-        );
-      }
-      payload.nbf = timespan(options.notBefore, timestamp);
-    } catch (err) {
-      return failure(err);
+    if (payload.nbf === undefined) {
+      throw new InvalidOptionsError(
+        '"notBefore" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
+      );
     }
+    payload.nbf = timespan(options.notBefore, timestamp);
   }
 
   if (typeof options.expiresIn !== "undefined" && typeof payload === "object") {
-    try {
-      if (payload.exp === undefined) {
-        return failure(
-          new Error(
-            '"expiresIn" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
-          )
-        );
-      }
-      payload.exp = timespan(options.expiresIn, timestamp);
-    } catch (err) {
-      return failure(err);
+    if (payload.exp === undefined) {
+      throw new InvalidOptionsError(
+        '"expiresIn" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
+      );
     }
+    payload.exp = timespan(options.expiresIn, timestamp);
   }
 
   Object.keys(options_to_payload).forEach(function (key) {
     const claim = options_to_payload[key as keyof object];
     if (options !== undefined && options[key as keyof object] !== undefined) {
       if (payload[claim] !== undefined) {
-        return failure(
-          new Error(
-            'Bad "options.' +
-              key +
-              '" option. The payload already has an "' +
-              claim +
-              '" property.'
-          )
+        throw new InvalidOptionsError(
+          'Bad "options.' +
+            key +
+            '" option. The payload already has an "' +
+            claim +
+            '" property.',
+          key,
+          claim
         );
       }
       payload[claim as keyof object] = options[key as keyof object];
