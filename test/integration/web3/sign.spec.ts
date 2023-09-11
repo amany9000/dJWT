@@ -10,7 +10,7 @@ describe("Test for signing: sign()", () => {
             "iat" : 1582062696,
             "exp" : 1782098690,
             "iss" : "0x231a5147b7c2bDF1dc8449Da0DeF741077447bCD"
-        }, web3Sign)
+        }, web3Sign, {verifierID: 1})
 
         expect(token).not.toBe(void 0);
         expect(typeof(token)).toBe("string");
