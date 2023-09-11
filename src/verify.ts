@@ -4,7 +4,7 @@ import { jwsVerify } from "./jws";
 import { VerifierOptions, Token, Verifier } from "./types";
 import { VerificationError, TokenExpiredError, NotBeforeError } from "./errors";
 
-export function verify(verifier: Verifier, jwtString: string, options: VerifierOptions) {
+export function verify(verifier: Verifier, jwtString: string, options?: Partial<VerifierOptions>) {
   //clone this object since we are going to mutate it.
   options = Object.assign({}, options);
 
@@ -38,11 +38,8 @@ export function verify(verifier: Verifier, jwtString: string, options: VerifierO
 
   let decodedToken: Token | null;
 
-  try {
-    decodedToken = decode(jwtString, true);
-  } catch (err) {
-    throw err;
-  }
+
+  decodedToken = decode(jwtString, true);
 
   if (!decodedToken) {
     throw new VerificationError("Invalid token");
@@ -56,14 +53,10 @@ export function verify(verifier: Verifier, jwtString: string, options: VerifierO
 
   let valid;
 
-  try {
-    valid = jwsVerify(decodedToken.header.verifierID, verifier, jwtString, decodedToken.payload.iss);
-  } catch (e) {
-    throw e;
-  }
+  valid = jwsVerify(decodedToken.header.verifierID, verifier, jwtString, decodedToken.payload.iss);
 
   if (!valid) {
-    throw new VerificationError("invalid signature");
+    throw new VerificationError("Invalid signature");
   }
 
   const payload = decodedToken.payload;

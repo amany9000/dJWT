@@ -54,5 +54,7 @@ export type JwsVerifyOptions = {
 
 export type Signer = (payload: string) => Promise<string>;
 
-export type Verifier = 
-  (payload: string, signature: string, address?: string) => Promise<boolean | string>;
+interface Verifier{
+  (payload: string, signature: string, address: string): boolean;
+  (payload: string, signature: string): string;
+}

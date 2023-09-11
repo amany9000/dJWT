@@ -37,10 +37,11 @@ function securedInputFromJWS(jwsSig: string) {
   return jwsSig.split(".", 2).join(".");
 }
 
-function signatureFromJWS(jwsSig: string) {
+function signatureFromJWS(jwsSig: string, encoding?: BufferEncoding) {
+  encoding = encoding || "utf8";
   const sig = jwsSig.split(".")[2];
-  if (sig) return sig;
-
+  
+  if (sig) return Buffer.from(sig, "base64").toString(encoding);
   throw new JwsDecodingError("Signature not present in token", jwsSig);
 }
 
@@ -58,6 +59,7 @@ function signatureObjectFromJws(jwsSig: string, encoding?: BufferEncoding) {
 function payloadFromJWS(jwsSig: string, encoding?: BufferEncoding) {
   encoding = encoding || "utf8";
   var payload = jwsSig.split(".")[1];
+  
   if (payload) return Buffer.from(payload, "base64").toString(encoding);
   else throw new JwsDecodingError("Error decoding jws", jwsSig);
 }
