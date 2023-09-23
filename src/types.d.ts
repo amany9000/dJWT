@@ -52,7 +52,9 @@ export type JwsVerifyOptions = {
   encoding?: (this: any, key: string, value: any) => any;
 };
 
-export type Signer = (payload: string) => Promise<string>;
+interface Signer{
+  (payload: string): Promise<string> | string;
+}
 
 interface Verifier{
   (payload: string, signature: string, address: string): boolean;
