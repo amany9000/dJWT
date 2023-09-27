@@ -1,5 +1,6 @@
 import { timespan } from "./utils";
 import { signJws } from "./jws";
+import { payloadSchema } from "./schemas";
 import { InvalidPayloadError, InvalidOptionsError } from "./errors";
 
 import type { SignerOptions, Payload, Header, Signer } from "./types";
@@ -14,10 +15,6 @@ const SUPPORTED_ALGS = ["ES256K", "ED25519", "SR25519"];
 /*
 function validateOptions(options) {
   return validate(sign_options_schema, false, options, 'options');
-}
-
-function validatePayload(payload) {
-  return validate(registered_claims_schema, true, payload, 'payload');
 }
 */
 
@@ -42,6 +39,8 @@ export async function sign(payload: Payload, signer : Signer, options?: Partial<
   const isObjectPayload =
     typeof payload === "object" && !Buffer.isBuffer(payload);
   
+  payloadSchema.parse(payload);
+
   if(!options.verifierID)
     options.verifierID = 0;
   
