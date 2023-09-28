@@ -12,16 +12,16 @@ import type { Signer } from "../../src";
 
 describe("Test for signing: sign()", () => {
   it.each([
-    [web3Sign, "0x231a5147b7c2bDF1dc8449Da0DeF741077447bCD", 1, undefined],
-    [signEthers, "0x145831eba8085d78c1d30A9C108aAD8A1501d6e0", 1, undefined],
+    [web3Sign, "0x231a5147b7c2bDF1dc8449Da0DeF741077447bCD", 1, "ES256k"],
+    [signEthers, "0x145831eba8085d78c1d30A9C108aAD8A1501d6e0", 1, "ES256k"],
     [
       signPolkadot,
       "5F7MBfGdyTg5th5gzsWMUyaVBRUkhEZw5Q82rPrtSP1q9F3E",
       0,
       "SR25519",
     ],
-    [signBitcoin, "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk", 0, undefined],
-    [metamaskSign, "0x29c76e6ad8f28bb1004902578fb108c507be341b", 1, undefined],
+    [signBitcoin, "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk", 0, "ES256k"],
+    [metamaskSign, "0x29c76e6ad8f28bb1004902578fb108c507be341b", 1, "ES256k"],
   ])(
     "sign with %p",
     async (

@@ -1,14 +1,11 @@
 export type SignerOptions = {
-  expiresIn: number;
-  notBefore: number;
-  audience: string;
-  algorithm: string = 0;
+  algorithm: string;
   header: Header;
   encoding: string;
-  subject: string;
-  jwtid: string;
   noTimestamp: boolean;
   verifierID: number = 0;
+  expiresIn?: number;
+  notBefore?: number;
 };
 
 export type VerifierOptions = {

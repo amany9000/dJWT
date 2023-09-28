@@ -21,14 +21,14 @@ describe("Test for verification: verify()", () => {
       eth.accounts.recover as Verifier,
       "0x231a5147b7c2bDF1dc8449Da0DeF741077447bCD",
       1,
-      undefined,
+      "ES256k",
     ],
     [
       signEthers,
       ethers.verifyMessage as Verifier,
       "0x145831eba8085d78c1d30A9C108aAD8A1501d6e0",
       1,
-      undefined,
+      "ES256k",
     ],
     [
       signPolkadot,
@@ -42,14 +42,14 @@ describe("Test for verification: verify()", () => {
       verifyBitcoin as Verifier,
       "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk",
       0,
-      undefined,
+      "ES256k",
     ],
     [
       metamaskSign,
       metamaskVerify as Verifier,
       "0x29c76e6ad8f28bb1004902578fb108c507be341b",
       1,
-      undefined,
+      "ES256k",
     ],
   ])(
     "sign the payload with %p, get the token and verify it with %p",
