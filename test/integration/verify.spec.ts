@@ -34,14 +34,14 @@ describe("Test for verification: verify()", () => {
       signPolkadot,
       validateSigPolkadot as Verifier,
       "5F7MBfGdyTg5th5gzsWMUyaVBRUkhEZw5Q82rPrtSP1q9F3E",
-      0,
+      undefined,
       "SR25519",
     ],
     [
       signBitcoin,
       verifyBitcoin as Verifier,
       "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk",
-      0,
+      undefined,
       "ES256k",
     ],
     [
@@ -57,8 +57,8 @@ describe("Test for verification: verify()", () => {
       signFunc: Signer,
       verifierFunc: Verifier,
       address: string,
-      verifierID: number,
-      algorithm: string | undefined
+      verifierID: number | undefined,
+      algorithm: string
     ) => {
       const payload = {
         nonce: 654321,

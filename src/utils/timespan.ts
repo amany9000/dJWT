@@ -1,7 +1,7 @@
 import ms from 'ms';
 import {TimespanDecodingError} from "../errors";
 
-export function timespan(time: string | number, iat: number) {
+export function timespan(time: string | number, iat: number): number {
   var timestamp = iat || Math.floor(Date.now() / 1000);
 
   if (typeof time === 'string') {

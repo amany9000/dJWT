@@ -17,18 +17,18 @@ describe("Test for signing: sign()", () => {
     [
       signPolkadot,
       "5F7MBfGdyTg5th5gzsWMUyaVBRUkhEZw5Q82rPrtSP1q9F3E",
-      0,
+      undefined,
       "SR25519",
     ],
-    [signBitcoin, "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk", 0, "ES256k"],
+    [signBitcoin, "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk", undefined, "ES256k"],
     [metamaskSign, "0x29c76e6ad8f28bb1004902578fb108c507be341b", 1, "ES256k"],
   ])(
     "sign with %p",
     async (
       signFunc: Signer,
       address: string,
-      verifierID: number,
-      algorithm: string | undefined
+      verifierID: number| undefined,
+      algorithm: string 
     ) => {
       const token = await sign(
         {

@@ -1,25 +1,24 @@
 import { z } from "zod";
 
 export const payloadSchema = z.object({
-  iss: z.string().nonempty("Issuer (iss) claim has to be provided."),
-  nonce: z.number().positive("A nonce > 0 has to be provided."),
-  exp: z.union([
-    z.number().positive(),
-    z.string().nonempty("Expiration Time (exp) claim has to be provided."),
-  ]),
+  iss: z.string({"invalid_type_error": "Issuer (iss) claim has to be a string"}).nonempty("Issuer (iss) claim has to be non-empty."),
+  nonce: z.number({"invalid_type_error": "nonce has to be a number"}).positive("A nonce > 0 has to be provided."),
+  exp: z
+    .number({"invalid_type_error": "Expiration Time (exp) claim has to be a number"})
+    .positive(
+      "A positive number as Expiration Time (exp) claim has to be provided."
+    ),
   iat: z
     .number()
-    .positive("Issued At (iat) claim, if provided, has to be a positive number.")
+    .positive(
+      "Issued At (iat) claim, if provided, has to be a positive number."
+    )
     .optional(),
   nbf: z
-    .union([
-      z.number().positive(),
-      z
-        .string()
-        .nonempty(
-          "Not Before (nbf) claim, if provided, has to be a positive number or a non-empty string."
-        ),
-    ])
+    .number()
+    .positive(
+      "Not Before (nbf) claim, if provided, has to be a positive number."
+    )
     .optional(),
   sub: z
     .string()
@@ -36,6 +35,47 @@ export const payloadSchema = z.object({
         .array(z.string())
         .nonempty(
           "Audience (aud) claim, if provided, has to be a non-empty string or an array of string."
+        ),
+    ])
+    .optional(),
+});
+
+export const signerOptionsSchema = z.object({
+  algorithm: z.string({"invalid_type_error": "Algorithm has to be a string"}).nonempty("options.algorithm has to be provided."),
+  header: z.object({
+    alg: z.string().nonempty("header.alg has to be provided."),
+    verifierId: z
+      .number()
+      .gte(0, "header.verifierId should be greater than -1")
+      .lte(1, "header.verifierId should be less than 2"),
+  }).optional(),
+	verifierId: z
+	.number()
+	.gte(0, "options.verifierId should be greater than -1")
+	.lte(1, "options.verifierId should be less than 2")
+	.optional(),
+  encoding: z
+    .string()
+    .nonempty("encoding, if provided, has to be a non-empty string.")
+    .optional(),
+  noTimestamp: z.boolean().optional(),
+  expiresIn: z
+    .union([
+      z.number().positive(),
+      z
+        .string()
+        .nonempty(
+          'options.expiresIn, if provided, has to be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
+        ),
+    ])
+    .optional(),
+  notBefore: z
+    .union([
+      z.number().positive(),
+      z
+        .string()
+        .nonempty(
+          'options.notBefore, if provided, has to be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
         ),
     ])
     .optional(),

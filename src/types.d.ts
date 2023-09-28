@@ -1,11 +1,11 @@
 export type SignerOptions = {
   algorithm: string;
   header: Header;
+  verifierID: number;
   encoding: string;
   noTimestamp: boolean;
-  verifierID: number = 0;
-  expiresIn?: number;
-  notBefore?: number;
+  expiresIn: number | string;
+  notBefore: number | string;
 };
 
 export type VerifierOptions = {
@@ -26,9 +26,9 @@ export type VerifierOptions = {
 export type Payload = {
   iss: string;
   nonce: number;
-  exp: number | string;
+  exp: number;
   iat?: number;
-  nbf?: number | string;
+  nbf?: number;
   sub?: string;
   jti?: string;
   aud?: string | [string];
