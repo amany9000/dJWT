@@ -1,10 +1,16 @@
 import { z } from "zod";
 
 export const payloadSchema = z.object({
-  iss: z.string({"invalid_type_error": "Issuer (iss) claim has to be a string"}).nonempty("Issuer (iss) claim has to be non-empty."),
-  nonce: z.number({"invalid_type_error": "nonce has to be a number"}).positive("A nonce > 0 has to be provided."),
+  iss: z
+    .string({ invalid_type_error: "Issuer (iss) claim has to be a string" })
+    .nonempty("Issuer (iss) claim has to be non-empty."),
+  nonce: z
+    .number({ invalid_type_error: "nonce has to be a number" })
+    .positive("A nonce > 0 has to be provided."),
   exp: z
-    .number({"invalid_type_error": "Expiration Time (exp) claim has to be a number"})
+    .number({
+      invalid_type_error: "Expiration Time (exp) claim has to be a number",
+    })
     .positive(
       "A positive number as Expiration Time (exp) claim has to be provided."
     ),
@@ -40,20 +46,24 @@ export const payloadSchema = z.object({
     .optional(),
 });
 
-export const signerOptionsSchema = z.object({
-  algorithm: z.string({"invalid_type_error": "Algorithm has to be a string"}).nonempty("options.algorithm has to be provided."),
-  header: z.object({
-    alg: z.string().nonempty("header.alg has to be provided."),
-    verifierId: z
-      .number()
-      .gte(0, "header.verifierId should be greater than -1")
-      .lte(1, "header.verifierId should be less than 2"),
-  }).optional(),
-	verifierId: z
-	.number()
-	.gte(0, "options.verifierId should be greater than -1")
-	.lte(1, "options.verifierId should be less than 2")
-	.optional(),
+export const headerSchema = z.object({
+  alg: z.string().nonempty("header.alg has to be provided."),
+  verifierID: z
+    .number()
+    .gte(0, "header.verifierID should be greater than -1")
+    .lte(1, "header.verifierID should be less than 2"),
+});
+
+export const signOptionsSchema = z.object({
+  algorithm: z
+    .string({ invalid_type_error: "Algorithm has to be a string" })
+    .nonempty("options.algorithm has to be provided."),
+  header: headerSchema.optional(),
+  verifierID: z
+    .number()
+    .gte(0, "options.verifierID should be greater than -1")
+    .lte(1, "options.verifierID should be less than 2")
+    .optional(),
   encoding: z
     .string()
     .nonempty("encoding, if provided, has to be a non-empty string.")

@@ -34,7 +34,6 @@ export class VerificationError extends BaseDjwtError {
 		super(message);
 	}
 }
-
 export class InvalidPayloadError extends BaseDjwtError {
 	public constructor(message : string) {
 		super(message);

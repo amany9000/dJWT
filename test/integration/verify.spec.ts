@@ -67,13 +67,11 @@ describe("Test for verification: verify()", () => {
         iss: address,
       };
       const token = await sign(payload, signFunc, { verifierID, algorithm });
-
       expect(token).not.toBe(void 0);
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      console.log("token", token);
-      const receivedToken = verify(verifierFunc, token);
+      const receivedToken = verify(verifierFunc, token, {complete: true, nonce: 654321});
       expect(receivedToken.payload).toMatchObject(payload);
       expect(receivedToken.signature).toBeDefined();
       expect(typeof receivedToken.signature).toBe("string");
