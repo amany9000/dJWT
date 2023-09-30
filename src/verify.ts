@@ -1,94 +1,85 @@
+import {z} from "zod";
+
 import { decode } from "./decode";
 import { timespan } from "./utils";
 import { jwsVerify } from "./jws";
-import { VerifierOptions, Token, Verifier } from "./types";
 import { VerificationError, TokenExpiredError, NotBeforeError } from "./errors";
+import { verifyOptionsSchema, headerSchema, payloadSchema } from "./schemas";
+ 
+import type { VerifyOptions, Verifier, TokenOrPayload } from "./types";
 
-export function verify(verifier: Verifier, jwtString: string, options?: Partial<VerifierOptions>) {
+export function verify(verifier: Verifier, jwtString: string, options?: Partial<VerifyOptions>): TokenOrPayload{
   //clone this object since we are going to mutate it.
   options = Object.assign({}, options);
+  verifyOptionsSchema.parse(options);
+  
+  jwtString = z.string({
+    invalid_type_error: "jwtString must be provided",
+  }).nonempty("jwtString must be non-empty").parse(jwtString);
 
-  if (options.clockTimestamp && typeof options.clockTimestamp !== "number") {
-    throw new VerificationError("clockTimestamp must be a number");
-  }
-
-  if (
-    options.nonce !== undefined &&
-    (typeof options.nonce !== "number")
-  ) {
-    throw new VerificationError("nonce must be a number");
+  if (jwtString.split(".").length !== 3) {
+    throw new VerificationError("jwt malformed");
   }
 
   const clockTimestamp =
     options.clockTimestamp || Math.floor(Date.now() / 1000);
 
-  if (!jwtString) {
-    throw new VerificationError("jwt must be provided");
-  }
-
-  if (typeof jwtString !== "string") {
-    throw new VerificationError("jwt must be a string");
-  }
-
-  const parts = jwtString.split(".");
-
-  if (parts.length !== 3) {
-    throw new VerificationError("jwt malformed");
-  }
-
-  let decodedToken: Token | null;
-
-
-  decodedToken = decode(jwtString, true);
+  const decodedToken = decode(jwtString, {complete: true});
 
   if (!decodedToken) {
     throw new VerificationError("Invalid token");
   }
 
   if (!decodedToken.header) {
-    throw new VerificationError("Invalid token, header not present.");
+    throw new VerificationError("Invalid token decoding, header not present in decoded token");
+  }
+
+  if (!decodedToken.payload) {
+    throw new VerificationError("Invalid token decoding, payload not present in decoded token");
+  }
+
+  if (!decodedToken.signature) {
+    throw new VerificationError("Invalid token decoding, signature not present in decoded token");
   }
 
   const header = decodedToken.header;
-
-  let valid;
-
-  valid = jwsVerify(decodedToken.header.verifierID, verifier, jwtString, decodedToken.payload.iss);
-
-  if (!valid) {
-    throw new VerificationError("Invalid signature");
-  }
+  headerSchema.parse(header);
 
   const payload = decodedToken.payload;
+  payloadSchema.parse(payload);
 
-  if (typeof payload === "string")
-    throw new VerificationError(
-      "Error while decoding payload, it is of type string"
-    );
+  if(options.verifierID){
+    if(options.verifierID !== header.verifierID)
+      throw new VerificationError(
+        "header.verifierID is not equal to options.verifierID"
+      );
+  }
 
-  if (typeof payload.nbf !== "undefined" && !options.ignoreNotBefore) {
-    if (typeof payload.nbf !== "number") {
-      throw new VerificationError("invalid nbf value");
-    }
+  if(options.algorithm){
+    if(options.algorithm !== header.alg)
+      throw new VerificationError(
+        "header.alg is not equal to options.algorithm"
+      );
+  }
+
+  if ( payload.nbf !== undefined && !options.ignoreNotBefore) {
     if (payload.nbf > clockTimestamp + (options.clockTolerance || 0)) {
       throw new NotBeforeError("jwt not active", payload.nbf);
     }
   }
 
-  if (typeof payload.exp !== "undefined" && !options.ignoreExpiration) {
-    if (typeof payload.exp !== "number") {
-      throw new VerificationError("invalid exp value");
-    }
+  if ( payload.exp !== undefined && !options.ignoreExpiration) {
     if (clockTimestamp >= payload.exp + (options.clockTolerance || 0)) {
       throw new TokenExpiredError("jwt expired", payload.exp);
     }
   }
 
   if (options.audience) {
+    if (payload.aud === undefined)
+      throw new VerificationError(
+        "options.audience is present but payload.aud is not"
+      );
 
-    if(payload.aud === undefined)
-      throw new VerificationError("options.audience is present but payload.aud is not");
-    
     const audiences = Array.isArray(options.audience)
       ? options.audience
       : [options.audience];
@@ -111,9 +102,8 @@ export function verify(verifier: Verifier, jwtString: string, options?: Partial<
 
   if (options.issuer) {
     const invalid_issuer =
-      (typeof options.issuer === "string" && payload.iss !== options.issuer) ||
-      (Array.isArray(options.issuer) &&
-        options.issuer.indexOf(payload.iss) === -1);
+    payload.iss !== options.issuer ||
+    (Array.isArray(options.issuer) && options.issuer.indexOf(payload.iss) === -1);
 
     if (invalid_issuer) {
       throw new VerificationError(
@@ -152,7 +142,7 @@ export function verify(verifier: Verifier, jwtString: string, options?: Partial<
     }
 
     const maxAgeTimestamp = timespan(options.maxAge, payload.iat);
-    if (typeof maxAgeTimestamp === "undefined") {
+    if (maxAgeTimestamp === undefined) {
       throw new VerificationError(
         '"maxAge" should be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
       );
@@ -161,16 +151,25 @@ export function verify(verifier: Verifier, jwtString: string, options?: Partial<
       throw new TokenExpiredError("maxAge exceeded", maxAgeTimestamp);
     }
   }
+
+  const valid = jwsVerify(
+    decodedToken.header.verifierID,
+    verifier,
+    jwtString,
+    decodedToken.payload.iss
+  );
+
+  if (!valid) { 
+    throw new VerificationError("Invalid signature");
+  }
+
   const signature = decodedToken.signature;
-  if (options.complete === true)
+  if (options.complete)
     return {
       header: header,
       payload: payload,
       signature: signature,
-    } as Token;
+    };
   else
-    return {
-      payload: payload,
-      signature: signature,
-    } as Token;
+    return payload;
 }

@@ -2,7 +2,7 @@ import { Buffer } from "buffer";
 import { jwaVerify } from "../jwa";
 import { JwsDecodingError } from "../errors";
 
-import type { JwsVerifyOptions, Token, Verifier } from "../types";
+import type { Token, Verifier, Header, Payload } from "../types";
 
 const JWS_REGEX = /^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)?$/;
 
@@ -19,7 +19,7 @@ function safeJsonParse(thing: any) {
   }
 }
 
-function headerFromJWS(jwsSig: string) {
+function headerFromJWS(jwsSig: string) : Header{
   var encodedHeader = jwsSig.split(".", 1)[0];
 
   if (encodedHeader)
@@ -29,7 +29,7 @@ function headerFromJWS(jwsSig: string) {
   else
     throw new JwsDecodingError(
       "Error decoding jws from this jwt",
-      encodedHeader
+      jwsSig
     );
 }
 
@@ -44,17 +44,6 @@ function signatureFromJWS(jwsSig: string, encoding?: BufferEncoding) {
   if (sig) return Buffer.from(sig, "base64").toString(encoding);
   throw new JwsDecodingError("Signature not present in token", jwsSig);
 }
-
-
-/*
-function signatureObjectFromJws(jwsSig: string, encoding?: BufferEncoding) {
-  encoding = encoding || "utf8";
-  var payload = jwsSig.split(".")[2];
-  if (payload)
-    return safeJsonParse(Buffer.from(payload, "base64").toString(encoding));
-  else throw new JwsDecodingError("Error decoding jws", jwsSig);
-}
-*/
 
 function payloadFromJWS(jwsSig: string, encoding?: BufferEncoding) {
   encoding = encoding || "utf8";
@@ -76,19 +65,18 @@ export function jwsVerify( verifierID: number, verifier: Verifier, jwsSig: strin
 
 export function decodeJws(
   jwsSig: string,
-  opts: JwsVerifyOptions = { encoding: undefined}
-): Token | null {
-  //opts = opts || {};
+  encoding: BufferEncoding = 'utf8'
+): Token {
 
-  if (!isValidJws(jwsSig)) return null;
+  if (!isValidJws(jwsSig)) throw new JwsDecodingError("JWT doesn't pass regex", jwsSig);
 
   var header = headerFromJWS(jwsSig);
-  if (!header) return null;
+  if (!header) throw new JwsDecodingError("JWT doesn't contain header", jwsSig);
 
-  var payload = JSON.parse(payloadFromJWS(jwsSig), opts.encoding);
+  var payload = JSON.parse(payloadFromJWS(jwsSig)) as Payload;
   return {
     header: header,
     payload: payload,
-    signature: signatureFromJWS(jwsSig),
-  } as Token;
+    signature: signatureFromJWS(jwsSig, encoding),
+  };
 }

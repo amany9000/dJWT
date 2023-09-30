@@ -1,19 +1,17 @@
 import { timespan } from "./utils";
 import { signJws } from "./jws";
-import { payloadSchema, signerOptionsSchema } from "./schemas";
+import { payloadSchema, signOptionsSchema } from "./schemas";
 import { InvalidPayloadError, InvalidOptionsError } from "./errors";
 
-import type { SignerOptions, Payload, Header, Signer } from "./types";
+import type { SignOptions, Payload, Header, Signer } from "./types";
 
 export async function sign(
   payload: Payload,
   signer: Signer,
-  options: Partial<SignerOptions> & Pick<SignerOptions, "algorithm">
+  options: Partial<SignOptions> & Pick<SignOptions, "algorithm">
 ) {
-  options = options || { algorithm: "ES256k" };
-
   payloadSchema.parse(payload);
-  signerOptionsSchema.parse(options);
+  signOptionsSchema.parse(options);
 
   let header: Header | undefined = options.header;
 

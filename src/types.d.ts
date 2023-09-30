@@ -1,4 +1,4 @@
-export type SignerOptions = {
+export type SignOptions = {
   algorithm: string;
   header: Header;
   verifierID: number;
@@ -8,9 +8,9 @@ export type SignerOptions = {
   notBefore: number | string;
 };
 
-export type VerifierOptions = {
+export type VerifyOptions = {
   audience: string | [string];
-  issuer: string;
+  issuer:  string | [string];
   subject: string;
   jwtid: string;
   clockTimestamp: number;
@@ -20,7 +20,13 @@ export type VerifierOptions = {
   ignoreExpiration: number;
   maxAge: number;
   complete: boolean;
-  algorithms: [string];
+  algorithm: string;
+  verifierID: number;
+};
+
+export type DecodeOptions = {
+  completed: boolean;
+  encoding: string;
 };
 
 export type Payload = {
@@ -40,13 +46,28 @@ export type Header = {
 };
 
 export type Token = {
-  header?: Header;
+  header: Header;
   payload: Payload;
   signature: string;
 };
 
-export type JwsVerifyOptions = {
-  encoding?: (this: any, key: string, value: any) => any;
+export type TokenOrPayload = Partial<{
+  header: Header;
+  payload: Payload;
+  signature: string;
+  iss: string;
+  nonce: number;
+  exp: number;
+  iat: number;
+  nbf: number;
+  sub: string;
+  jti: string;
+  aud: string | [string];
+}>;
+
+export type JwsDecodeOptions = {
+  encoding: BufferEncoding;
+  complete?: boolean;
 };
 
 interface Signer{
