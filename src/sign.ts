@@ -1,7 +1,7 @@
 import { timespan } from "./utils";
 import { signJws } from "./jws";
 import { payloadSchema, signOptionsSchema } from "./schemas";
-import { InvalidPayloadError, InvalidOptionsError } from "./errors";
+import { InvalidPayloadError, InvalidSignOptionsError } from "./errors";
 
 import type { SignOptions, Payload, Header, Signer } from "./types";
 
@@ -10,8 +10,16 @@ export async function sign(
   signer: Signer,
   options: Partial<SignOptions> & Pick<SignOptions, "algorithm">
 ) {
-  payloadSchema.parse(payload);
-  signOptionsSchema.parse(options);
+  const payloadParseResult = payloadSchema.safeParse(payload);
+  if(!payloadParseResult.success){
+    throw new InvalidPayloadError(payloadParseResult.error.message);
+  }
+
+  const optionsParseResult = signOptionsSchema.safeParse(options);
+  if(!optionsParseResult.success){
+    throw new InvalidSignOptionsError(optionsParseResult.error.message);
+  }
+
 
   let header: Header | undefined = options.header;
 
@@ -19,7 +27,7 @@ export async function sign(
     if (!options.verifierID) options.verifierID = 0;
 
     if (!options.algorithm)
-      throw new InvalidOptionsError(
+      throw new InvalidSignOptionsError(
         "Either header or algorithm is required in options"
       );
 

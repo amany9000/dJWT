@@ -40,7 +40,7 @@ export class InvalidPayloadError extends BaseDjwtError {
 	}
 }
 
-export class InvalidOptionsError extends BaseDjwtError {	
+export class InvalidSignOptionsError extends BaseDjwtError {	
 	public payloadValue? : string; 
 	public optionsValue? : string; 
 	

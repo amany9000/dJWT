@@ -11,11 +11,15 @@ export abstract class BaseDjwtError extends Error implements DjwtError {
 	public override stack: string | undefined;
 	public innerError: Error | Error[] | undefined;
 
-	public constructor(msg?: string, innerError?: Error | Error[]) {
+	public constructor(msg?: string, innerError: Error | Error[] = new Error("dJWT Error")) {
 		super(msg);
 		this.innerError = innerError;
 		this.name = this.constructor.name;
-		this.stack = new Error().stack;
+		if (typeof Error.captureStackTrace === 'function') {
+			Error.captureStackTrace(new.target.constructor);
+		} else {
+			this.stack = new Error().stack;
+		}
 	}
 
 	public static convertToString(value: Error) {
