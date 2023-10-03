@@ -24,8 +24,6 @@ export async function sign(
   let header: Header | undefined = options.header;
 
   if (!header) {
-    if (!options.verifierID) options.verifierID = 0;
-
     if (!options.algorithm)
       throw new InvalidSignOptionsError(
         "Either header or algorithm is required in options"
@@ -33,7 +31,6 @@ export async function sign(
 
     header = {
       alg: options.algorithm,
-      verifierID: options.verifierID,
     };
   }
 
@@ -47,7 +44,7 @@ export async function sign(
 
   if (options.expiresIn !== undefined) {
     if (payload.exp !== undefined)
-      throw new InvalidPayloadError(
+      throw new InvalidSignOptionsError(
         'Bad "options.expiresIn" option the payload already has an "exp" property.'
       );
     else payload.exp = timespan(options.expiresIn, timestamp);
@@ -55,7 +52,7 @@ export async function sign(
 
   if (options.notBefore !== undefined) {
     if (payload.nbf !== undefined) {
-      throw new InvalidPayloadError(
+      throw new InvalidSignOptionsError(
         'Bad "options.notBefore" option the payload already has an "nbf" property.'
       );
     } else payload.nbf = timespan(options.notBefore, timestamp);

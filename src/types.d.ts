@@ -1,7 +1,6 @@
 export type SignOptions = {
   algorithm: string;
   header: Header;
-  verifierID: number;
   encoding: string;
   noTimestamp: boolean;
   expiresIn: number | string;
@@ -21,7 +20,6 @@ export type VerifyOptions = {
   maxAge: number;
   complete: boolean;
   algorithm: string;
-  verifierID: number;
 };
 
 export type DecodeOptions = {
@@ -42,7 +40,6 @@ export type Payload = {
 
 export type Header = {
   alg: string;
-  verifierID: number;
 };
 
 export type Token = {
@@ -75,6 +72,5 @@ interface Signer{
 }
 
 interface Verifier{
-  (payload: string, signature: string, address: string): boolean;
-  (payload: string, signature: string): string;
+  (payload: string, signature: string, address: string): boolean | string;
 }
