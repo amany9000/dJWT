@@ -1,9 +1,9 @@
 import { BaseDjwtError } from './baseDjwtError';
 
-export class JwaVerifyError extends BaseDjwtError{
-    public argument: number; 
-	public constructor(message: string, arg: number) {
-		super(message);
-        this.argument = arg;
-	}
+export class JwaVerifyError extends BaseDjwtError {
+  public argument: any;
+  public constructor(message: string, arg: any) {
+    super(message);
+    this.argument = arg;
+  }
 }

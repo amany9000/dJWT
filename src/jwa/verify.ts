@@ -3,21 +3,21 @@ import { JwaVerifyError } from "../errors";
 
 
 export function jwaVerify(
-	verifierID: number,
 	verifier: Verifier,
   payload: string,
   signature: string,
   address: string
 ): boolean {
 
-  switch(verifierID){
-    case 0 : {
-      return verifier(payload, signature, address) as boolean;
+
+  const result = verifier(payload, signature, address);
+  switch(typeof result){
+    case "boolean" : {
+      return result as boolean;
     };
-    case 1: {
-			const addressRecovered : string = verifier(payload, signature) as string;
-      return addressRecovered === address;
+    case "string": {
+      return result === address;
     };
-    default: throw new JwaVerifyError("Incorrect Verifier function ID, can be only 0 or 1.", verifierID)
+    default: throw new JwaVerifyError("verifier() does not return boolean or string", result);
   }
 }

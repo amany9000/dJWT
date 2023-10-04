@@ -35,9 +35,9 @@ export class VerificationError extends BaseDjwtError {
 	}
 }
 export class InvalidPayloadError extends BaseDjwtError {
-	public constructor(message : string) {
-		super(message);
-	}
+  public constructor(message: string) {
+    super(message);
+  }
 }
 
 export class InvalidSignOptionsError extends BaseDjwtError {	

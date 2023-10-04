@@ -58,8 +58,5 @@ export const verifyOptionsSchema = z
       .nonempty(
         "options.algorithm, if provided, has to be a non-empty string."
       ),
-    verifierID: z
-      .number()
-      .gte(0, "options.verifierID should be greater than -1")
-      .lte(1, "options.verifierID should be less than 2"),
-  }).partial();
+  })
+  .partial();

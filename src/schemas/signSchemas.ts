@@ -47,11 +47,7 @@ export const payloadSchema = z.object({
 });
 
 export const headerSchema = z.object({
-  alg: z.string().nonempty("header.alg has to be provided."),
-  verifierID: z
-    .number()
-    .gte(0, "header.verifierID should be greater than -1")
-    .lte(1, "header.verifierID should be less than 2"),
+  alg: z.string().nonempty("header.alg has to be provided.")
 });
 
 export const signOptionsSchema = z.object({
@@ -59,11 +55,6 @@ export const signOptionsSchema = z.object({
     .string({ invalid_type_error: "Algorithm has to be a string" })
     .nonempty("options.algorithm has to be provided."),
   header: headerSchema.optional(),
-  verifierID: z
-    .number()
-    .gte(0, "options.verifierID should be greater than -1")
-    .lte(1, "options.verifierID should be less than 2")
-    .optional(),
   encoding: z
     .string()
     .nonempty("encoding, if provided, has to be a non-empty string.")
