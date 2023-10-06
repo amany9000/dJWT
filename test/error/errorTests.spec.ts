@@ -1,30 +1,33 @@
 import {
-    web3Sign,
-    signEthers,
-    signPolkadot,
-    signBitcoin,
-  } from "../sharedFixtures";import { expect, describe, it } from "@jest/globals";
+  web3Sign,
+  signEthers,
+  signPolkadot,
+  signBitcoin,
+  metamaskSign,
+  verifyBitcoin,
+  metamaskVerify,
+} from "../sharedFixtures";
+import { expect, describe, it } from "@jest/globals";
 
-import type { Signer } from "../../src";
-import { sign, InvalidSignOptionsError, InvalidPayloadError } from "../../src";
+import type { Signer, Verifier } from "../../src";
+import {
+  sign,
+  verify,
+  InvalidSignOptionsError,
+  VerificationError,
+} from "../../src";
 
 describe("Test for error: sign()", () => {
   it.each([
-    [web3Sign, "0x231a5147b7c2bDF1dc8449Da0DeF741077447bCD", 2, "ES256k"],
+    [web3Sign, "0x231a5147b7c2bDF1dc8449Da0DeF741077447bCD", "ES256k"],
     [
       signPolkadot,
       "5F7MBfGdyTg5th5gzsWMUyaVBRUkhEZw5Q82rPrtSP1q9F3E",
-      2,
       "SR25519",
     ],
   ])(
-    "Fails due to incorrect verifierID in signOption with signer: %p",
-    async (
-      signFunc: Signer,
-      address: string,
-      verifierID: number,
-      algorithm: string
-    ) => {
+    "Fails due to expiresIn provided in signOption along with payload.exp, Signer: %p",
+    async (signFunc: Signer, address: string, algorithm: string) => {
       expect(
         sign(
           {
@@ -32,25 +35,21 @@ describe("Test for error: sign()", () => {
             iat: 1582062696,
             exp: 1782098690,
             iss: address,
+            nbf: 1682098690,
           },
           signFunc,
-          { verifierID, algorithm }
+          { algorithm, notBefore: "1d" }
         )
       ).rejects.toThrow(InvalidSignOptionsError);
     }
   );
 
   it.each([
-    [signEthers, "0x145831eba8085d78c1d30A9C108aAD8A1501d6e0", 1, "ES256k"],
-    [signBitcoin, "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk", undefined, "ES256k"],
+    [signEthers, "0x145831eba8085d78c1d30A9C108aAD8A1501d6e0", "ES256k"],
+    [signBitcoin, "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk", "ES256k"],
   ])(
     "Fails due to expiresIn provided in signOption along with payload.exp, Signer: %p",
-    async (
-      signFunc: Signer,
-      address: string,
-      verifierID: number | undefined,
-      algorithm: string
-    ) => {
+    async (signFunc: Signer, address: string, algorithm: string) => {
       expect(
         sign(
           {
@@ -60,9 +59,53 @@ describe("Test for error: sign()", () => {
             iss: address,
           },
           signFunc,
-          { verifierID, algorithm, expiresIn: "12231132112" }
+          { algorithm, expiresIn: 12231132112 }
         )
-      ).rejects.toThrow(InvalidPayloadError);
+      ).rejects.toThrow(InvalidSignOptionsError);
+    }
+  );
+});
+
+describe("Test for verification: verify()", () => {
+  it.each([
+    [
+      metamaskSign,
+      metamaskVerify as Verifier,
+      "0x29c76e6ad8f28bb1004902578fb108c507be341b",
+      "ES256k",
+    ],
+    [
+      signBitcoin,
+      verifyBitcoin as Verifier,
+      "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk",
+      "ES256k",
+    ],
+  ])(
+    "Verifucation fails because of incorrect options.algorithm, Signer: %p",
+    async (
+      signFunc: Signer,
+      verifierFunc: Verifier,
+      address: string,
+      algorithm: string
+    ) => {
+      const payload = {
+        nonce: 654321,
+        iat: 1582062696,
+        exp: 1782098690,
+        iss: address,
+      };
+      const token = await sign(payload, signFunc, { algorithm });
+      expect(token).not.toBe(void 0);
+      expect(typeof token).toBe("string");
+      expect(token.split(".").length).toBe(3);
+
+      expect(
+        () => verify(verifierFunc, token, {
+          complete: true,
+          nonce: 654321,
+          algorithm: "SR25519",
+        })
+      ).toThrow(VerificationError);
     }
   );
 });
