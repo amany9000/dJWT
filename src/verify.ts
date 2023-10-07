@@ -23,14 +23,14 @@ export function verify(
 
   const optionsParseResult = verifyOptionsSchema.safeParse(options);
   if (!optionsParseResult.success) {
-    throw new VerificationError(optionsParseResult.error.message);
+    throw new VerificationError(JSON.parse(optionsParseResult.error.message)[0].message);
   }
 
   jwtString = z
     .string({
       invalid_type_error: "jwtString must be provided",
     })
-    .nonempty("jwtString must be non-empty")
+    .min(1, "jwtString must be non-empty")
     .parse(jwtString);
 
   if (jwtString.split(".").length !== 3) {
@@ -67,13 +67,13 @@ export function verify(
   const header = decodedToken.header;
   const headerParseResult = headerSchema.safeParse(header);
   if (!headerParseResult.success) {
-    throw new VerificationError(headerParseResult.error.message);
+    throw new VerificationError(JSON.parse(headerParseResult.error.message)[0].message);
   }
 
   const payload = decodedToken.payload;
   const payloadParseResult = payloadSchema.safeParse(payload);
   if (!payloadParseResult.success) {
-    throw new InvalidPayloadError(payloadParseResult.error.message);
+    throw new InvalidPayloadError(JSON.parse(payloadParseResult.error.message)[0].message);
   }
 
   if (options.algorithm) {
@@ -145,7 +145,7 @@ export function verify(
   if (options.jwtid) {
     if (payload.jti !== options.jwtid) {
       throw new VerificationError(
-        "jwt jwtid invalid. expected: " + options.jwtid
+        "jwtid invalid. expected: " + options.jwtid
       );
     }
   }

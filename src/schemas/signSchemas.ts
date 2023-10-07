@@ -3,7 +3,7 @@ import { z } from "zod";
 export const payloadSchema = z.object({
   iss: z
     .string({ invalid_type_error: "Issuer (iss) claim has to be a string" })
-    .nonempty("Issuer (iss) claim has to be non-empty."),
+    .min(1, "Issuer (iss) claim has to be non-empty."),
   nonce: z
     .number({ invalid_type_error: "nonce has to be a number" })
     .positive("A nonce > 0 has to be provided."),
@@ -28,36 +28,36 @@ export const payloadSchema = z.object({
     .optional(),
   sub: z
     .string()
-    .nonempty("Subject (sub) claim, if provided, has to be a non-empty string.")
+    .min(1, "Subject (sub) claim, if provided, has to be a non-empty string.")
     .optional(),
   jti: z
     .string()
-    .nonempty("JWT ID (jti) claim, if provided, has to be a non-empty string.")
+    .min(1, "JWT ID (jti) claim, if provided, has to be a non-empty string.")
     .optional(),
   aud: z
     .union([
-      z.string().nonempty(),
+      z.string().min(1, ),
       z
         .array(z.string())
-        .nonempty(
+        .min(1, 
           "Audience (aud) claim, if provided, has to be a non-empty string or an array of string."
         ),
     ])
     .optional(),
-});
+}).strict();
 
 export const headerSchema = z.object({
-  alg: z.string().nonempty("header.alg has to be provided.")
-});
+  alg: z.string().min(1, "header.alg has to be provided.")
+}).strict();
 
 export const signOptionsSchema = z.object({
   algorithm: z
     .string({ invalid_type_error: "Algorithm has to be a string" })
-    .nonempty("options.algorithm has to be provided."),
+    .min(1, "options.algorithm has to be provided."),
   header: headerSchema.optional(),
   encoding: z
     .string()
-    .nonempty("encoding, if provided, has to be a non-empty string.")
+    .min(1, "encoding, if provided, has to be a non-empty string.")
     .optional(),
   noTimestamp: z.boolean().optional(),
   expiresIn: z
@@ -65,7 +65,7 @@ export const signOptionsSchema = z.object({
       z.number().positive(),
       z
         .string()
-        .nonempty(
+        .min(1, 
           'options.expiresIn, if provided, has to be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
         ),
     ])
@@ -75,9 +75,9 @@ export const signOptionsSchema = z.object({
       z.number().positive(),
       z
         .string()
-        .nonempty(
+        .min(1, 
           'options.notBefore, if provided, has to be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
         ),
     ])
     .optional(),
-});
+}).strict();

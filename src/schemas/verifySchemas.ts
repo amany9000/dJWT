@@ -3,27 +3,27 @@ import { z } from "zod";
 export const verifyOptionsSchema = z
   .object({
     audience: z.union([
-      z.string().nonempty(),
+      z.string().min(1, ),
       z
         .array(z.string())
-        .nonempty(
+        .min(1, 
           "options.audience, if provided, has to be a non-empty string or an array of string."
         ),
     ]),
     issuer: z.union([
-      z.string().nonempty(),
+      z.string().min(1, ),
       z
         .array(z.string())
-        .nonempty(
+        .min(1, 
           "options.issuer, if provided, has to be a non-empty string or an array of string."
         ),
     ]),
     subject: z
       .string()
-      .nonempty("options.subject, if provided, has to be a non-empty string."),
+      .min(1, "options.subject, if provided, has to be a non-empty string."),
     jwtid: z
       .string()
-      .nonempty("options.jwtid, if provided, has to be a non-empty string."),
+      .min(1, "options.jwtid, if provided, has to be a non-empty string."),
     clockTimestamp: z
       .number()
       .positive(
@@ -55,8 +55,9 @@ export const verifyOptionsSchema = z
     }),
     algorithm: z
       .string()
-      .nonempty(
+      .min(1, 
         "options.algorithm, if provided, has to be a non-empty string."
       ),
   })
-  .partial();
+  .partial()
+  .strict();

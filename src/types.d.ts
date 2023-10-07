@@ -8,8 +8,8 @@ export type SignOptions = {
 };
 
 export type VerifyOptions = {
-  audience: string | [string];
-  issuer:  string | [string];
+  audience: string | string[];
+  issuer:  string | string[];
   subject: string;
   jwtid: string;
   clockTimestamp: number;
@@ -35,7 +35,7 @@ export type Payload = {
   nbf?: number;
   sub?: string;
   jti?: string;
-  aud?: string | [string];
+  aud?: string | string[];
 };
 
 export type Header = {
@@ -59,7 +59,7 @@ export type TokenOrPayload = Partial<{
   nbf: number;
   sub: string;
   jti: string;
-  aud: string | [string];
+  aud: string | string[];
 }>;
 
 export type JwsDecodeOptions = {

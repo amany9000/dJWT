@@ -18,8 +18,8 @@ function jwsSecuredInput(
   encoding: BufferEncoding
 ) {
   encoding = encoding || "utf8";
-  var encodedHeader = base64url(toString(header), "binary");
-  var encodedPayload = base64url(toString(payload), encoding);
+  let encodedHeader = base64url(toString(header), "binary");
+  let encodedPayload = base64url(toString(payload), encoding);
   return util.format("%s.%s", encodedHeader, encodedPayload);
 }
 
@@ -29,7 +29,7 @@ export async function signJws(
   signer: Signer,
   encoding: BufferEncoding
 ) {
-  var securedInput = jwsSecuredInput(header, payload, encoding);
-  var signature = await signPayload(securedInput, signer);
+  let securedInput = jwsSecuredInput(header, payload, encoding);
+  let signature = await signPayload(securedInput, signer);
   return util.format("%s.%s", securedInput, base64url(signature, encoding));
 }

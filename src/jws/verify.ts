@@ -20,7 +20,7 @@ function safeJsonParse(thing: any) {
 }
 
 function headerFromJWS(jwsSig: string): Header {
-  var encodedHeader = jwsSig.split(".", 1)[0];
+  let encodedHeader = jwsSig.split(".", 1)[0];
 
   if (encodedHeader)
     return safeJsonParse(
@@ -43,7 +43,7 @@ function signatureFromJWS(jwsSig: string, encoding?: BufferEncoding) {
 
 function payloadFromJWS(jwsSig: string, encoding?: BufferEncoding) {
   encoding = encoding || "utf8";
-  var payload = jwsSig.split(".")[1];
+  let payload = jwsSig.split(".")[1];
 
   if (payload) return Buffer.from(payload, "base64").toString(encoding);
   else throw new JwsDecodingError("Error decoding jws", jwsSig);
@@ -54,8 +54,8 @@ export function isValidJws(string: string) {
 }
 
 export function jwsVerify(verifier: Verifier, jwsSig: string, address: string) {
-  var signature = signatureFromJWS(jwsSig);
-  var securedInput = securedInputFromJWS(jwsSig);
+  let signature = signatureFromJWS(jwsSig);
+  let securedInput = securedInputFromJWS(jwsSig);
   return jwaVerify(verifier, securedInput, signature, address);
 }
 
@@ -66,10 +66,10 @@ export function decodeJws(
   if (!isValidJws(jwsSig))
     throw new JwsDecodingError("JWT doesn't pass regex", jwsSig);
 
-  var header = headerFromJWS(jwsSig);
+  let header = headerFromJWS(jwsSig);
   if (!header) throw new JwsDecodingError("JWT doesn't contain header", jwsSig);
 
-  var payload = JSON.parse(payloadFromJWS(jwsSig)) as Payload;
+  let payload = JSON.parse(payloadFromJWS(jwsSig)) as Payload;
   return {
     header: header,
     payload: payload,

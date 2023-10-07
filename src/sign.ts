@@ -12,12 +12,12 @@ export async function sign(
 ) {
   const payloadParseResult = payloadSchema.safeParse(payload);
   if(!payloadParseResult.success){
-    throw new InvalidPayloadError(payloadParseResult.error.message);
+    throw new InvalidPayloadError(JSON.parse(payloadParseResult.error.message)[0].message);
   }
 
   const optionsParseResult = signOptionsSchema.safeParse(options);
   if(!optionsParseResult.success){
-    throw new InvalidSignOptionsError(optionsParseResult.error.message);
+    throw new InvalidSignOptionsError(JSON.parse(optionsParseResult.error.message)[0].message);
   }
 
 
