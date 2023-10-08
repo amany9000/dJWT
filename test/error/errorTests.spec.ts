@@ -81,7 +81,7 @@ describe("Test for verification: verify()", () => {
       "ES256k",
     ],
   ])(
-    "Verifucation fails because of incorrect options.algorithm, Signer: %p",
+    "Verification fails because of incorrect options.algorithm, Signer: %p",
     async (
       signFunc: Signer,
       verifierFunc: Verifier,

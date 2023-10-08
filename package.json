@@ -29,7 +29,8 @@
   "homepage": "https://github.com/amany9000/dJWT#readme",
   "dependencies": {
     "lodash": "^4.17.21",
-    "ms": "^2.1.3"
+    "ms": "^2.1.3",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@metamask/eth-sig-util": "^7.0.0",

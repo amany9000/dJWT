@@ -59,6 +59,9 @@ describe("Test for verification: verify()", () => {
         iat: 1582062696,
         exp: 1782098690,
         iss: address,
+        nbf: 100000000,
+        sub: address,
+        jti: "324221"
       };
       const token = await sign(payload, signFunc, { algorithm });
       expect(token).not.toBe(void 0);
@@ -69,7 +72,70 @@ describe("Test for verification: verify()", () => {
         complete: true,
         nonce: 654321,
         maxAge: 10000000000,
-        issuer: address
+        issuer: address,
+        jwtid: "324221",
+        subject: address,
+        algorithm,
+      });
+      expect(receivedToken.payload).toMatchObject(payload);
+      expect(receivedToken.signature).toBeDefined();
+      expect(typeof receivedToken.signature).toBe("string");
+    }
+  );
+
+  it.each([
+    [
+      web3Sign,
+      web3Verify as Verifier,
+      "0x231a5147b7c2bDF1dc8449Da0DeF741077447bCD",
+      "ES256k",
+    ],
+    [
+      signEthers,
+      ethers.verifyMessage as Verifier,
+      "0x145831eba8085d78c1d30A9C108aAD8A1501d6e0",
+      "ES256k",
+    ],
+    [
+      metamaskSign,
+      metamaskVerify as Verifier,
+      "0x29c76e6ad8f28bb1004902578fb108c507be341b",
+      "ES256k",
+    ],
+  ])(
+    "check the audience during verification with %p2",
+    async (
+      signFunc: Signer,
+      verifierFunc: Verifier,
+      address: string,
+      algorithm: string
+    ) => {
+      
+      // Audience in this case is an EVM-chain address of the verifier of the JWT.
+      const payload = {
+        nonce: 654321,
+        iat: 1582062696,
+        exp: 1782098690,
+        iss: address,
+        nbf: 100000000,
+        sub: address,
+        jti: "324221",
+        aud: ["0x75FaBc80c774614C424ffC1d7017b4a534607935"]
+      };
+      const token = await sign(payload, signFunc, { algorithm });
+      expect(token).not.toBe(void 0);
+      expect(typeof token).toBe("string");
+      expect(token.split(".").length).toBe(3);
+
+      const receivedToken = verify(verifierFunc, token, {
+        complete: true,
+        nonce: 654321,
+        maxAge: 10000000000,
+        issuer: address,
+        jwtid: "324221",
+        subject: address,
+        audience: "0x75FaBc80c774614C424ffC1d7017b4a534607935",
+        algorithm,
       });
       expect(receivedToken.payload).toMatchObject(payload);
       expect(receivedToken.signature).toBeDefined();
