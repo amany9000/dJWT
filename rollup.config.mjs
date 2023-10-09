@@ -1,4 +1,6 @@
 import typescript from "@rollup/plugin-typescript";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
 
 import pkg from "./package.json" assert { type: "json" };
 
@@ -22,7 +24,7 @@ const config = {
       format: "esm",
     },
   ].map(createOutput),
-  plugins: [typescript()],
+  plugins: [typescript(), nodeResolve(), commonjs()],
 };
 
 export default config;

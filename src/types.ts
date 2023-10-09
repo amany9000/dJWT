@@ -67,10 +67,10 @@ export type JwsDecodeOptions = {
   complete?: boolean;
 };
 
-interface Signer{
+export interface Signer{
   (payload: string): Promise<string> | string;
 }
 
-interface Verifier{
+export interface Verifier{
   (payload: string, signature: string, address: string): boolean | string;
 }

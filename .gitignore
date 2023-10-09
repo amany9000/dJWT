@@ -133,3 +133,6 @@ package-lock.json
 
 # For macOS
 .DS_Store
+
+# build
+lib

@@ -9,8 +9,9 @@
     "lib"
   ],
   "scripts": {
-    "rollup": "rollup -c",
-    "prepublishOnly": "npm run rollup"
+    "build": "rollup -c",
+    "prepublish:public": "npm run build && npm run bump-version",
+    "publish:public": "npm publish --access public"
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,8 @@
     "@metamask/eth-sig-util": "^7.0.0",
     "@polkadot/keyring": "^12.5.1",
     "@polkadot/util-crypto": "^12.5.1",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "11.1.5",
     "@truffle/hdwallet-provider": "^2.1.15",
     "@types/jest": "^29.5.5",
