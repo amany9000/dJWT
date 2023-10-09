@@ -1,29 +1,20 @@
 {
-  "files": ["src/index.ts"],
   "compilerOptions": {
-    "target": "es2020",
-    "module": "es2020",
+    "rootDir": "src",
     "declaration": true,
-    "outDir": "./dist",
-    "moduleResolution": "Node",
-    "noEmit": false,
+    "declarationDir": "types",
+    "module": "esnext",
+    "target": "es6",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "sourceMap": true,
+    "inlineSources": true,
+    "moduleResolution": "node",
     "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
-  }
+    "esModuleInterop": true
+  },
+  "include": ["src"],
+  "exclude": [
+    "node_modules",
+    "lib"
+  ]
 }

@@ -2,11 +2,15 @@
   "name": "djwt",
   "version": "1.0.0",
   "description": "A JWT Library with blockchain key based signing for JWS.",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "lib/index.esm.js",
+  "types": "lib/types/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "scripts": {
-    "build": "tsc",
-    "test": "jest"
+    "rollup": "rollup -c",
+    "prepublishOnly": "npm run rollup"
   },
   "repository": {
     "type": "git",
@@ -36,6 +40,7 @@
     "@metamask/eth-sig-util": "^7.0.0",
     "@polkadot/keyring": "^12.5.1",
     "@polkadot/util-crypto": "^12.5.1",
+    "@rollup/plugin-typescript": "11.1.5",
     "@truffle/hdwallet-provider": "^2.1.15",
     "@types/jest": "^29.5.5",
     "@types/lodash": "^4.14.196",
@@ -45,9 +50,10 @@
     "ecpair": "^2.1.0",
     "ethers": "^6.7.1",
     "jest": "^29.7.0",
+    "rollup": "^3.29.4",
     "tiny-secp256k1": "^2.2.3",
     "ts-jest": "^29.1.1",
-    "typescript": "^5.1.6",
+    "typescript": "^5.2.2",
     "web3": "^4.1.2"
   }
 }
