@@ -10,8 +10,10 @@
   ],
   "scripts": {
     "build": "rollup -c",
-    "prepublish:public": "npm run build && npm run bump-version",
-    "publish:public": "npm publish --access public"
+    "prepublish:public": "npm run build",
+    "publish:public:patch": "npm version patch --force && npm publish --access public",
+    "publish:public:minor": "npm version minor --force && npm publish --access public",
+    "publish:public": "npm run publish:public:patch"
   },
   "repository": {
     "type": "git",
