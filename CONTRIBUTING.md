@@ -10,10 +10,16 @@
 git clone https://github.com/{Your_Username}/dJWT.git
 cd dJWT
 ```
--   Install Packages.
+-   Install Dependencies.
 
 ```sh
 npm install
+```
+
+-   Run Tests.
+
+```sh
+npm test
 ```
 
 ## Contributing
