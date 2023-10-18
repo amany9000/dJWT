@@ -1,35 +1,33 @@
-# dJWT
-A general purpose JWT with customisable signature signing+verification. Compatibile with several major blockchain: EVM-based(web3, ethers, metamask), Polkadot, Bitcoin. 
-
-![Logo](./img/djwt-logo.jpeg)
-
----
-
 <div align='center'>
   
 <a href='https://github.com/amany9000/djwt/releases'>
   
 
-<img src='https://img.shields.io/github/v/release/amany9000/djwt?color=%23FDD835&label=version&style=for-the-badge'>
+<img src='https://img.shields.io/github/v/release/amany9000/djwt?color=%23FDD835&label=version'>
   
 </a>
   
 <a href='https://github.com/amany9000/djwt/blob/main/LICENSE'>
   
-<img src='https://img.shields.io/github/license/amany9000/djwt?style=for-the-badge'>
+<img src='https://img.shields.io/github/license/amany9000/djwt'>
   
 </a>
 
 <a href='https://www.npmjs.com/package/djwt'>
   
 
-<img src='https://img.shields.io/npm/v/djwt?style=for-the-badge'>
+<img src='https://img.shields.io/npm/v/djwt'>
   
 </a>
   
 </div>
 
 <br />
+
+# dJWT
+A general purpose JWT with customisable signature signing+verification. Compatibile with several major blockchain: EVM-based(web3, ethers, metamask), Polkadot, Bitcoin. 
+
+![Logo](./img/djwt-logo.jpeg)
 
 ---
 
@@ -54,14 +52,14 @@ npm install djwt
 
 ---
 
-# ✍️ Contributing
+## ✍️ Contributing
 Found a bug? Create an [issue](https://github.com/amany9000/djwt/issues).
 
 If you have a contribution in mind, please check out our [Contribution Guide](https://github.com/amany9000/dJWT/blob/main/CONTRIBUTING.md) for information on how to do so. 
 
 ---
 
-# 🌟 Spread the word!
+## 🌟 Spread the word!
 
 If you want to say thank you and/or show support for dJWT:
 
