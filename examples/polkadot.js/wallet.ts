@@ -16,7 +16,7 @@ type KeyStore = {
 
 function getKeyStore() {
   return new Promise<KeyStore | undefined>((resolve, reject) => {
-    readFile("keystore.json", (err, keyStoreString) => {
+    readFile("polkadot.js/keystore.json", (err, keyStoreString) => {
         if(err)
             resolve(undefined);
         if(keyStoreString)
@@ -33,7 +33,7 @@ async function getKeyPairById(id: number) {
   return undefined;
 }
 
-async function signPayload(payload: string | Uint8Array) {
+export async function signPayload(payload: string | Uint8Array) {
   await cryptoWaitReady();
   
   const hash = blake2AsHex("1234").slice(34);  
