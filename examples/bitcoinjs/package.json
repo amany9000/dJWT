@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bitcoinjs-message": "^2.2.0",
+    "djwt": "^1.0.0",
     "ecpair": "^2.1.0",
     "tiny-secp256k1": "^2.2.3"
   }
