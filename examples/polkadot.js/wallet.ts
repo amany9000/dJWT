@@ -16,7 +16,7 @@ type KeyStore = {
 
 function getKeyStore() {
   return new Promise<KeyStore | undefined>((resolve, reject) => {
-    readFile("polkadot.js/keystore.json", (err, keyStoreString) => {
+    readFile("keystore.json", (err, keyStoreString) => {
         if(err)
             resolve(undefined);
         if(keyStoreString)

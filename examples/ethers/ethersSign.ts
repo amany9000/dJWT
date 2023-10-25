@@ -2,7 +2,7 @@ import * as ethers from "ethers";
 import fs from "fs";
 
 export async function signEthers(payloadAndHeader: string) {
-  const keystoreWallet = (fs.readFileSync('./ethers/keystoreWallet.json')).toString();
+  const keystoreWallet = (fs.readFileSync('./keystoreWallet.json')).toString();
 
   const wallet = await ethers.Wallet.fromEncryptedJson(keystoreWallet, "pass_12345678");
 

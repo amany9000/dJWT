@@ -3,7 +3,7 @@ import * as fs from 'fs';
 
 
 export async function getWallet(web3 : Web3){
-    const readKeystore =  JSON.parse(fs.readFileSync("web3/keystore.json").toString());
+    const readKeystore =  JSON.parse(fs.readFileSync("keystore.json").toString());
     const decryptedAccount = await web3.eth.accounts.decrypt(readKeystore[0], 'pass_12345678');
     return decryptedAccount;
 }
