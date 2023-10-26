@@ -1,0 +1,15 @@
+{
+  "name": "metamask",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "amany9000",
+  "license": "ISC",
+  "dependencies": {
+    "@metamask/eth-sig-util": "^7.0.0",
+    "djwt": "^1.0.0"
+  }
+}
