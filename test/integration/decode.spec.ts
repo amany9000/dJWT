@@ -10,7 +10,7 @@ import { expect, describe, it } from "@jest/globals";
 
 import type { Signer } from "../../src";
 
-describe("Test for signing: sign()", () => {
+describe("Test for decoding: decode()", () => {
   it.each([
     [web3Sign, "0x231a5147b7c2bDF1dc8449Da0DeF741077447bCD", "ES256k"],
     [signEthers, "0x145831eba8085d78c1d30A9C108aAD8A1501d6e0", "ES256k"],
@@ -21,7 +21,7 @@ describe("Test for signing: sign()", () => {
     ],
     [metamaskSign, "0x29c76e6ad8f28bb1004902578fb108c507be341b", "ES256k"]
   ])(
-    "sign with %p",
+    "Complete decode with %p",
     async (signFunc: Signer, address: string, algorithm: string) => {
       const payload = {
         nonce: 654321,
@@ -67,7 +67,7 @@ describe("Test for signing: sign()", () => {
     ],
     [signBitcoin, "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk", "ES256k"]
   ])(
-    "sign with %p",
+    "Partial decode with %p.3",
     async (signFunc: Signer, address: string, algorithm: string) => {
       const payload = {
         nonce: 654321,

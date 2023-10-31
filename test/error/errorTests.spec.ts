@@ -66,7 +66,7 @@ describe("Test for error: sign()", () => {
   );
 });
 
-describe("Test for verification: verify()", () => {
+describe("Test errors for for verification: verify()", () => {
   it.each([
     [
       metamaskSign,
