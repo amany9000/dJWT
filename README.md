@@ -33,7 +33,7 @@ A general purpose JWT with customisable signature signing+verification. Compatib
 
 ## Tested Libraries/Wallets
 
-You can use dJWT if you connect to a local or remote Ethereum using ->>>>
+You can use dJWT if you connect to a local or remote Ethereum node using ->>>>
 -   [Web3.js](https://github.com/ethereum/web3.js)
 -   [Ethers.js](https://github.com/ethers-io/ethers.js)
 -   [Polkadot.js](https://github.com/polkadot-js)

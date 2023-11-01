@@ -54,12 +54,11 @@ export const signOptionsSchema = z.object({
   algorithm: z
     .string({ invalid_type_error: "Algorithm has to be a string" })
     .min(1, "options.algorithm has to be provided."),
-  header: headerSchema.optional(),
+  header: headerSchema,
   encoding: z
     .string()
-    .min(1, "encoding, if provided, has to be a non-empty string.")
-    .optional(),
-  noTimestamp: z.boolean().optional(),
+    .min(1, "encoding, if provided, has to be a non-empty string."),
+  noTimestamp: z.boolean(),
   expiresIn: z
     .union([
       z.number().positive(),
@@ -68,8 +67,7 @@ export const signOptionsSchema = z.object({
         .min(1, 
           'options.expiresIn, if provided, has to be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
         ),
-    ])
-    .optional(),
+    ]),
   notBefore: z
     .union([
       z.number().positive(),
@@ -78,6 +76,5 @@ export const signOptionsSchema = z.object({
         .min(1, 
           'options.notBefore, if provided, has to be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
         ),
-    ])
-    .optional(),
-}).strict();
+    ]),
+}).partial().strict();
