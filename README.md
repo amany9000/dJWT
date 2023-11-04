@@ -25,7 +25,7 @@
 <br />
 
 # dJWT
-A general purpose JWT with customisable signature signing+verification. Compatibile with several major blockchain: EVM-based(web3, ethers, metamask), Polkadot, Bitcoin. 
+A general purpose JWT with customisable signature signing and verification. Compatibile with several major blockchains: EVM-based(web3, ethers, metamask), Polkadot, Bitcoin. 
 
 ![Logo](./img/djwt-logo.jpeg)
 

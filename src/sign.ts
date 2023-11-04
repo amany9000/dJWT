@@ -8,7 +8,7 @@ import type { SignOptions, Payload, Header, Signer } from "./types";
 export async function sign(
   payload: Payload,
   signer: Signer,
-  options: Partial<SignOptions>
+  options: Partial<SignOptions> & (Pick<SignOptions,  "header"> | Pick<SignOptions, "algorithm">)
 ) {
   const payloadParseResult = payloadSchema.safeParse(payload);
   if(!payloadParseResult.success){
