@@ -6,37 +6,37 @@
 npm install djwt
 ```
 
-## **Usage**:
+## **Functions**:
 
-### **async function sign(payload: Payload, signer: Signer, options Partial<SignOptions>)**
+### **`async function sign(payload: Payload, signer: Signer, options Partial<SignOptions>) : Promise<string>`**
 
-(Asynchronous) Return a JSON Web Token after signer the `payload.header` with the signer().
+(Asynchronous) Return a JSON Web Token (string) after signing the `payload.header` with the signer().
 
 **Parameters**
 
 | parameter    | required/optional | type | description |
 |    :---:     |     :---:      |     :---:     |     :---:     |
-| payload   | required     | Payload   | Payload to signed |
+| payload   | required     | Payload   |  JWT Payload |
 | signer   | required     | Signer   |  Function that will sign the `payload.header` (see function signature below) |
-| options   | required     | SignOptions   | Options for signer (must contain header or algorithm) |
+| options   | required     | SignOptions   | JWT Options (must contain header or algorithm) |
 
 `Type Payload fields:`
-* `iss` (string) - Issuer claim, address of the issuer of the JWT.
-* `nonce` (number) - Random signature nonce.
-* `exp` (string) - Expiration claim, expiration timestamp of the JWT.
-* `iat` (number) (optional) - The issued at  claim, issuance timestamp of the JWT.
-* `nbf` (number) (optional) - Not before claim, the time span before which the JWT
+* `iss`   (string) - Issuer claim, address of the issuer of the JWT.
+* `nonce`  (number) - Random signature nonce.
+* `exp`  (string) - Expiration claim, expiration timestamp of the JWT.
+* `iat`  (number) (optional) - Issued at  claim, issuance timestamp of the JWT.
+* `nbf`  (number) (optional) - Not before claim, the time span before which the JWT
 is invalid.
-* `sub` (string) (optional) - Subject claim, the subject of the JWT.
-* `jti` (string) (optional) - The JWT ID claim, unique identifier for the JWT.
-* `aud` (string | string[]) (optional) - The Audience claim, recipient or group of recipients of the JWT.
+* `sub`  (string) (optional) - Subject claim, the subject of the JWT.
+* `jti`  (string) (optional) - The JWT ID claim, unique identifier for the JWT.
+* `aud`  (string | string[]) (optional) - The Audience claim, recipient or group of recipients of the JWT.
 
 `Interface Signer:`
-Signer is your JWT (`payload.header`) signing function which must satisfy this call signature : 
+* Signer is your JWT (`payload.header`) signing function which must satisfy this call signature : 
 ```js   
 (payload: string): Promise<string> | string; 
 ```
-[signBitcoin](./examples/bitcoinjs/signBitcoin.ts) is a valid Signer.
+For example, [signBitcoin](./examples/bitcoinjs/signBitcoin.ts) is a valid Signer.
 
 `Type SignOptions fields:`
 * `algorithm` (string) - The algorithm used for signing `payload.header` by `signer()`.
@@ -46,6 +46,8 @@ Signer is your JWT (`payload.header`) signing function which must satisfy this c
 * `expiresIn` (number | string) (optional): The time span of JWT expiration. All inputs for [ms](https://github.com/vercel/ms) are valid.
 * `notBefore` (number | string) (): The time span before which the JWT is invalid. All inputs for [ms](https://github.com/vercel/ms) are valid.
 
+**Return Type** 
+* Returns the JWT string as `Promise<string>`.
 
 **Example**
 ```js

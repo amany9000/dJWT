@@ -8,18 +8,22 @@ import type { SignOptions, Payload, Header, Signer } from "./types";
 export async function sign(
   payload: Payload,
   signer: Signer,
-  options: Partial<SignOptions> & (Pick<SignOptions,  "header"> | Pick<SignOptions, "algorithm">)
-) {
+  options: Partial<SignOptions> &
+    (Pick<SignOptions, "header"> | Pick<SignOptions, "algorithm">)
+): Promise<string> {
   const payloadParseResult = payloadSchema.safeParse(payload);
-  if(!payloadParseResult.success){
-    throw new InvalidPayloadError(JSON.parse(payloadParseResult.error.message)[0].message);
+  if (!payloadParseResult.success) {
+    throw new InvalidPayloadError(
+      JSON.parse(payloadParseResult.error.message)[0].message
+    );
   }
 
   const optionsParseResult = signOptionsSchema.safeParse(options);
-  if(!optionsParseResult.success){
-    throw new InvalidSignOptionsError(JSON.parse(optionsParseResult.error.message)[0].message);
+  if (!optionsParseResult.success) {
+    throw new InvalidSignOptionsError(
+      JSON.parse(optionsParseResult.error.message)[0].message
+    );
   }
-
 
   let header: Header | undefined = options.header;
 
@@ -60,6 +64,5 @@ export async function sign(
 
   const encoding = options.encoding || "utf8";
 
-  let signature = signJws(header, payload, signer, encoding as BufferEncoding);
-  return signature;
+  return signJws(header, payload, signer, encoding as BufferEncoding);
 }
