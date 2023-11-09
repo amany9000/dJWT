@@ -14,8 +14,8 @@ import { verifyOptionsSchema, headerSchema, payloadSchema } from "./schemas";
 import type { VerifyOptions, Verifier, TokenOrPayload } from "./types";
 
 export function verify(
-  verifier: Verifier,
   jwtString: string,
+  verifier: Verifier,
   options?: Partial<VerifyOptions>
 ): TokenOrPayload {
   //clone this object since we are going to mutate it.

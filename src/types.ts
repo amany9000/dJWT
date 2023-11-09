@@ -9,7 +9,7 @@ export type SignOptions = {
 
 export type VerifyOptions = {
   audience: string | string[];
-  issuer:  string | string[];
+  issuer: string | string[];
   subject: string;
   jwtid: string;
   clockTimestamp: number;
@@ -17,7 +17,7 @@ export type VerifyOptions = {
   ignoreNotBefore: boolean;
   clockTolerance: number;
   ignoreExpiration: number;
-  maxAge: number;
+  maxAge: number | string;
   complete: boolean;
   algorithm: string;
 };
@@ -67,10 +67,10 @@ export type JwsDecodeOptions = {
   complete?: boolean;
 };
 
-export interface Signer{
+export interface Signer {
   (payload: string): Promise<string> | string;
 }
 
-export interface Verifier{
+export interface Verifier {
   (payload: string, signature: string, address: string): boolean | string;
 }
