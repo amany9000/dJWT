@@ -68,7 +68,7 @@ describe("Test for verification: verify()", () => {
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      const receivedToken = verify(verifierFunc, token, {
+      const receivedToken = verify(token, verifierFunc, {
         complete: true,
         nonce: 654321,
         maxAge: 10000000000,
@@ -127,7 +127,7 @@ describe("Test for verification: verify()", () => {
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      const receivedToken = verify(verifierFunc, token, {
+      const receivedToken = verify( token, verifierFunc, {
         complete: true,
         nonce: 654321,
         maxAge: 10000000000,
@@ -187,7 +187,7 @@ describe("Test for verification: verify()", () => {
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      const receivedPayload = verify(verifierFunc, token, {
+      const receivedPayload = verify( token, verifierFunc, {
         nonce: 654321,
         maxAge: 10000000000,
         issuer: address,

@@ -21,7 +21,7 @@ import {signEthers} from "./ethersSign";
 
       console.log(`Signed JWT token: ${token}`)
 
-      const receivedToken = verify(verifyMessage, token, {
+      const receivedToken = verify(token, verifyMessage, {
         complete: true,
         nonce: 654321,
         maxAge: 10000000000,

@@ -20,7 +20,7 @@ import {sign, verify} from "djwt";
 
       console.log(`Signed JWT token: ${token}`)
 
-      const receivedToken = verify(metamaskVerify, token, {
+      const receivedToken = verify(token, metamaskVerify, {
         complete: true,
         nonce: 654321,
         maxAge: 10000000000,

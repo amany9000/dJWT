@@ -22,7 +22,7 @@ import { sign, verify } from "djwt";
 
       console.log(`Signed JWT token: ${token}`)
 
-      const receivedToken = verify(validateSigPolkadot, token, {
+      const receivedToken = verify(token, validateSigPolkadot, {
         complete: true,
         nonce: 654321,
         maxAge: 10000000000,

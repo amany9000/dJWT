@@ -100,7 +100,7 @@ describe("Test errors for for verification: verify()", () => {
       expect(token.split(".").length).toBe(3);
 
       expect(
-        () => verify(verifierFunc, token, {
+        () => verify(token, verifierFunc, {
           complete: true,
           nonce: 654321,
           algorithm: "SR25519",

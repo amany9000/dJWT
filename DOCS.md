@@ -79,7 +79,7 @@ function metamaskSign(message: string): string{
 
 ```
 
-### **`function verify( verifier: Verifier, jwtString: string, options?: Partial<VerifyOptions>): TokenOrPayload `**
+### **`function verify(jwtString: string, verifier: Verifier, options?: Partial<VerifyOptions>): TokenOrPayload `**
 
 Verifies the JWT string for claims and signature and returns the entire token object or just the payload object. Signature verification is done using the `verifier` function.
 
@@ -87,8 +87,8 @@ Verifies the JWT string for claims and signature and returns the entire token ob
 
 | parameter    | required/optional | type | description |
 |    :---:     |     :---:      |     :---:     |     :---:     |
-| verifier   | required     | Verifier   | Fuction that will verify the signature in the JWT. |
 | jwtString   | required     | string   |  The JWT |
+| verifier   | required     | Verifier   | Fuction that will verify the signature in the JWT. |
 | options   | optional     | `Partial<VerifyOptions>`   | JWT Verification Options |
 
 `Interface Verifier:`
@@ -131,7 +131,7 @@ Returns the either the `Token` object if `options.complete=true` otherwise just 
   const address = "0x145831eba8085d78c1d30A9C108aAD8A1501d6e0";
   const algorithm = "ES256k";
 
-  const receivedToken = verify(verifyMessage, token, {
+  const receivedToken = verify(tokenString, verifyMessage, {
     complete: true,
     nonce: 654321,
     maxAge: 10000000000,
