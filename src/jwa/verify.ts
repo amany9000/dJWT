@@ -1,5 +1,5 @@
 import type { Verifier } from "../types";
-import { JwaVerifyError } from "../errors";
+import { JwaVerifyError, JwaAddressIncorrectError } from "../errors";
 
 
 export function jwaVerify(
@@ -16,7 +16,10 @@ export function jwaVerify(
       return result as boolean;
     };
     case "string": {
-      return result === address;
+      if (result === address)
+        return true;
+      else
+        throw new JwaAddressIncorrectError(address, result);
     };
     default: throw new JwaVerifyError("verifier() does not return boolean or string", result);
   }

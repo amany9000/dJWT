@@ -7,3 +7,14 @@ export class JwaVerifyError extends BaseDjwtError {
     this.argument = arg;
   }
 }
+
+export class JwaAddressIncorrectError extends BaseDjwtError {	
+	public expectedAddress? : string; 
+	public returnedAddress? : string; 
+	
+	public constructor(expectedAddress: string, returnedAddress: string) {
+		super(`Expected address : ${expectedAddress}, does not match with Returned Address: ${returnedAddress}`);
+		this.expectedAddress = expectedAddress;
+		this.returnedAddress = returnedAddress;
+	}
+}
