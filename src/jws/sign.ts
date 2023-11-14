@@ -4,7 +4,7 @@ import * as util from "util";
 import { signPayload } from "../jwa";
 import type { Payload, Header, Signer } from "../types";
 
-function base64url(string: string, encoding: BufferEncoding) {
+function base64url(string: string, encoding: BufferEncoding): string{
   return Buffer.from(string, encoding)
     .toString("base64")
     .replace(/=/g, "")
@@ -16,7 +16,7 @@ function jwsSecuredInput(
   header: object,
   payload: object,
   encoding: BufferEncoding
-) {
+): string {
   encoding = encoding || "utf8";
   let encodedHeader = base64url(toString(header), "binary");
   let encodedPayload = base64url(toString(payload), encoding);
@@ -28,7 +28,7 @@ export async function signJws(
   payload: Payload,
   signer: Signer,
   encoding: BufferEncoding
-) {
+): Promise<string> {
   let securedInput = jwsSecuredInput(header, payload, encoding);
   let signature = await signPayload(securedInput, signer);
   return util.format("%s.%s", securedInput, base64url(signature, encoding));
