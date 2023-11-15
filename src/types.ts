@@ -1,7 +1,7 @@
 export type SignOptions = {
   algorithm: string;
   header: Header;
-  encoding: string;
+  encoding: BufferEncoding;
   noTimestamp: boolean;
   expiresIn: number | string;
   notBefore: number | string;
@@ -20,11 +20,6 @@ export type VerifyOptions = {
   maxAge: number | string;
   complete: boolean;
   algorithm: string;
-};
-
-export type DecodeOptions = {
-  completed: boolean;
-  encoding: string;
 };
 
 export type Payload = {
@@ -62,9 +57,9 @@ export type TokenOrPayload = Partial<{
   aud: string | string[];
 }>;
 
-export type JwsDecodeOptions = {
+export type DecodeOptions = {
   encoding: BufferEncoding;
-  complete?: boolean;
+  complete: boolean;
 };
 
 export interface Signer {

@@ -1,17 +1,15 @@
 import { decodeJws } from "./jws";
-import { TokenOrPayload, JwsDecodeOptions } from "./types";
+import { TokenOrPayload, DecodeOptions } from "./types";
 
 export function decode(
-  jwt: string,
-  opts?: Partial<JwsDecodeOptions>
-): TokenOrPayload | null {
-  opts = Object.assign({}, opts);
-
-  const decoded = decodeJws(jwt, opts.encoding);
-  if (!decoded) return null;
+  jwtString: string,
+  options?: Partial<DecodeOptions>
+): TokenOrPayload {
+  options = Object.assign({}, options);
+  const decoded = decodeJws(jwtString, options.encoding);
 
   const payload = decoded.payload;
-  if (opts.complete)
+  if (options.complete)
     return {
       header: decoded.header,
       payload: payload,

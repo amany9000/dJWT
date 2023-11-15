@@ -31,6 +31,12 @@ A general purpose JWT with customisable signature signing and verification. Comp
 
 ---
 
+## Installation 
+
+```sh
+npm install djwt
+```
+
 ## Tested Libraries/Wallets
 
 You can use dJWT if you connect to a local or remote Ethereum node using ->>>>
@@ -40,15 +46,11 @@ You can use dJWT if you connect to a local or remote Ethereum node using ->>>>
 -   [Bitcoinjs](https://github.com/bitcoinjs/bitcoinjs-lib)
 -   [Metamask](https://github.com/metamask)
 
-## Installation 
-
-```sh
-npm install djwt
-```
 
 ## How to use 🛠️
-
+- For function specification refer to [Documenatation](./DOCS.md).
 - Check out the [examples](./examples/) section for small working projects on the above mentioned signer libraries/wallets.
+- You can look at the types in [types.ts](./src/types.ts).
 
 ---
 
