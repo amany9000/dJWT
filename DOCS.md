@@ -41,7 +41,7 @@ For example, [signBitcoin](./examples/bitcoinjs/signBitcoin.ts) is a valid Signe
 `Type SignOptions fields:`
 * `algorithm` (string) - The algorithm used for signing `payload.header` by `signer()`.
 * `header` (Header) - The Header object of the JWT.
-* `encoding` (string) (optional) - The encoding for the JWT.
+* `encoding` (BufferEncoding) (optional) - The encoding of the JWT.
 * `noTimestamp` (boolean) (optional): `iat` (issued at) field is not included in the payload if noTimestamp is set `true`.
 * `expiresIn` (number | string) (optional): The time span of JWT expiration. All inputs for [ms](https://github.com/vercel/ms) are valid.
 * `notBefore` (number | string) (optional): The time span before which the JWT is invalid. All inputs for [ms](https://github.com/vercel/ms) are valid.
@@ -141,4 +141,32 @@ Returns the either the `Token` object if `options.complete=true` otherwise just 
     audience: "0x75FaBc80c774614C424ffC1d7017b4a534607935",
     algorithm,
   });
+```
+
+
+### **`function decode(jwtString: string, options?: Partial<DecodeOptions>): TokenOrPayload`**
+
+Decodes the JWT string.
+
+**Parameters**
+
+| parameter    | required/optional | type | description |
+|    :---:     |     :---:      |     :---:     |     :---:     |
+| jwtString   | required     | string   |  The JWT |
+| options   | optional     | `Partial<DecodeOptions>`   | JWT Decoding Options |
+
+`Type DecodeOptions fields:`
+* `complete` (boolean) - `decode` returns the`Token` object if `options.complete=true` otherwise it returns just the `Payload` object.
+* `encoding` (BufferEncoding) (optional) - The encoding of the JWT.
+
+Note: Since `options` are of the type `Partial<DecodeOptions>`, both of these fields are optional.
+
+
+**Return Type** 
+Returns the either the `Token` object if `options.complete=true` otherwise just returns the `Payload` object.
+
+
+**Example**
+```js
+  const payloadDecoded = decode(tokenString);
 ```
