@@ -48,7 +48,7 @@ You can use dJWT if you connect to a local or remote Ethereum node using ->>>>
 
 
 ## How to use 🛠️
-- For function specification refer to [Documenatation](./DOCS.md).
+- For function specification refer to [Documentation](./DOCS.md).
 - Check out the [examples](./examples/) section for small working projects on the above mentioned signer libraries/wallets.
 - You can look at the types in [types.ts](./src/types.ts).
 

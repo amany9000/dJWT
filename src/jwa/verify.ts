@@ -1,13 +1,13 @@
 import type { Verifier } from "../types";
 import { JwaVerifyError, JwaAddressIncorrectError } from "../errors";
 
-export function jwaVerify(
+export async function jwaVerify(
   verifier: Verifier,
   payload: string,
   signature: string,
   address: string
-): boolean {
-  const result = verifier(payload, signature, address);
+): Promise<boolean> {
+  const result = await verifier(payload, signature, address);
   switch (typeof result) {
     case "boolean": {
       return result as boolean;

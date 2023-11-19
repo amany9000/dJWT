@@ -53,11 +53,11 @@ export function isValidJws(string: string): boolean {
   return JWS_REGEX.test(string) && !!headerFromJWS(string);
 }
 
-export function jwsVerify(
+export async function jwsVerify(
   verifier: Verifier,
   jwsSig: string,
   address: string
-): boolean {
+): Promise<boolean> {
   let signature = signatureFromJWS(jwsSig);
   let securedInput = securedInputFromJWS(jwsSig);
   return jwaVerify(verifier, securedInput, signature, address);

@@ -13,11 +13,11 @@ import { verifyOptionsSchema, headerSchema, payloadSchema } from "./schemas";
 
 import type { VerifyOptions, Verifier, TokenOrPayload } from "./types";
 
-export function verify(
+export async function verify(
   jwtString: string,
   verifier: Verifier,
   options?: Partial<VerifyOptions>
-): TokenOrPayload {
+): Promise<TokenOrPayload> {
   //clone this object since we are going to mutate it.
   options = Object.assign({}, options);
 
@@ -85,7 +85,7 @@ export function verify(
   if (options.algorithm) {
     if (options.algorithm !== header.alg)
       throw new VerificationError(
-        "header.alg is not equal to options.algorithm"
+        `header.alg: ${header.alg} is not equal to options.algorithm: ${options.algorithm}`
       );
   }
 
@@ -178,7 +178,7 @@ export function verify(
     }
   }
 
-  const valid = jwsVerify(verifier, jwtString, decodedToken.payload.iss);
+  const valid = await jwsVerify(verifier, jwtString, decodedToken.payload.iss);
 
   if (!valid) {
     throw new VerificationError("Invalid signature");

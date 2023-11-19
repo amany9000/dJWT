@@ -67,5 +67,8 @@ export interface Signer {
 }
 
 export interface Verifier {
-  (payload: string, signature: string, address: string): boolean | string;
+  (payload: string, signature: string, address: string):
+    Promise<boolean | string>
+    | boolean
+    | string;
 }
