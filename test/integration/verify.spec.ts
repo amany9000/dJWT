@@ -61,14 +61,14 @@ describe("Test for verification: verify()", () => {
         iss: address,
         nbf: 100000000,
         sub: address,
-        jti: "324221"
+        jti: "324221",
       };
       const token = await sign(payload, signFunc, { algorithm });
       expect(token).not.toBe(void 0);
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      const receivedToken = verify(token, verifierFunc, {
+      const receivedToken = await verify(token, verifierFunc, {
         complete: true,
         nonce: 654321,
         maxAge: 10000000000,
@@ -110,7 +110,6 @@ describe("Test for verification: verify()", () => {
       address: string,
       algorithm: string
     ) => {
-      
       // Audience in this case is an EVM-chain address of the verifier of the JWT.
       const payload = {
         nonce: 654321,
@@ -120,14 +119,14 @@ describe("Test for verification: verify()", () => {
         nbf: 100000000,
         sub: address,
         jti: "324221",
-        aud: ["0x75FaBc80c774614C424ffC1d7017b4a534607935"]
+        aud: ["0x75FaBc80c774614C424ffC1d7017b4a534607935"],
       };
       const token = await sign(payload, signFunc, { algorithm });
       expect(token).not.toBe(void 0);
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      const receivedToken = verify( token, verifierFunc, {
+      const receivedToken = await verify( token, verifierFunc, {
         complete: true,
         nonce: 654321,
         maxAge: 10000000000,
@@ -161,7 +160,7 @@ describe("Test for verification: verify()", () => {
       validateSigPolkadot as Verifier,
       "5F7MBfGdyTg5th5gzsWMUyaVBRUkhEZw5Q82rPrtSP1q9F3E",
       "SR25519",
-    ]
+    ],
   ])(
     "Signing with %p and verifying with %p without `complete:false`",
     async (
@@ -170,7 +169,6 @@ describe("Test for verification: verify()", () => {
       address: string,
       algorithm: string
     ) => {
-      
       // Audience in this case is an EVM-chain address of the verifier of the JWT.
       const payload = {
         nonce: 654321,
@@ -180,14 +178,14 @@ describe("Test for verification: verify()", () => {
         nbf: 100000000,
         sub: address,
         jti: "324221",
-        aud: ["0x75FaBc80c774614C424ffC1d7017b4a534607935"]
+        aud: ["0x75FaBc80c774614C424ffC1d7017b4a534607935"],
       };
       const token = await sign(payload, signFunc, { algorithm });
       expect(token).not.toBe(void 0);
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      const receivedPayload = verify( token, verifierFunc, {
+      const receivedPayload = await verify(token, verifierFunc, {
         nonce: 654321,
         maxAge: 10000000000,
         issuer: address,

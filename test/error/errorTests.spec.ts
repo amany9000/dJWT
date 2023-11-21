@@ -99,13 +99,15 @@ describe("Test errors for for verification: verify()", () => {
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
+
       expect(
-        () => verify(token, verifierFunc, {
+        async () => await verify(token, verifierFunc, {
           complete: true,
           nonce: 654321,
           algorithm: "SR25519",
         })
-      ).toThrow(VerificationError);
+      ).rejects.toThrow(VerificationError);
+
     }
   );
 });
