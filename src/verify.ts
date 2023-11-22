@@ -8,6 +8,7 @@ import {
   InvalidPayloadError,
   TokenExpiredError,
   NotBeforeError,
+  OptionsVerificationError,
 } from "./errors";
 import { verifyOptionsSchema, headerSchema, payloadSchema } from "./schemas";
 
@@ -84,8 +85,10 @@ export async function verify(
 
   if (options.algorithm) {
     if (options.algorithm !== header.alg)
-      throw new VerificationError(
-        `header.alg: ${header.alg} is not equal to options.algorithm: ${options.algorithm}`
+      throw new OptionsVerificationError(
+        "Header.alg is incorrect.",
+        header.alg,
+        options.algorithm
       );
   }
 
@@ -121,8 +124,10 @@ export async function verify(
     });
 
     if (!match) {
-      throw new VerificationError(
-        "jwt audience invalid. expected: " + audiences.join(" or ")
+      throw new OptionsVerificationError(
+        "JWT audience is incorrect.",
+        target.join(" or "),
+        audiences.join(" or ")
       );
     }
   }
@@ -134,30 +139,42 @@ export async function verify(
         options.issuer.indexOf(payload.iss) === -1);
 
     if (invalid_issuer) {
-      throw new VerificationError(
-        "jwt issuer invalid. expected: " + options.issuer
+      throw new OptionsVerificationError(
+        "JWT issuer invalid.",
+        payload.iss,
+        Array.isArray(options.issuer)
+          ? options.issuer.join(" or ")
+          : options.issuer
       );
     }
   }
 
   if (options.subject) {
     if (payload.sub !== options.subject) {
-      throw new VerificationError(
-        "jwt subject invalid. expected: " + options.subject
+      throw new OptionsVerificationError(
+        "JWT subject invalid.",
+        payload.sub ? payload.sub : "undefined",
+        options.subject
       );
     }
   }
 
   if (options.jwtid) {
     if (payload.jti !== options.jwtid) {
-      throw new VerificationError("jwtid invalid. expected: " + options.jwtid);
+      throw new OptionsVerificationError(
+        "JWT ID invalid.",
+        payload.jti ? payload.jti : "undefined",
+        options.jwtid
+      );    
     }
   }
 
   if (options.nonce) {
     if (payload.nonce !== options.nonce) {
-      throw new VerificationError(
-        "jwt nonce invalid. expected: " + options.nonce
+      throw new OptionsVerificationError(
+        "Signature nonce invalid.",
+        payload.nonce,
+        options.nonce
       );
     }
   }

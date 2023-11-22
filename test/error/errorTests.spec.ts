@@ -14,7 +14,7 @@ import {
   sign,
   verify,
   InvalidSignOptionsError,
-  VerificationError,
+  OptionsVerificationError,
 } from "../../src";
 
 describe("Test for error: sign()", () => {
@@ -106,8 +106,7 @@ describe("Test errors for for verification: verify()", () => {
           nonce: 654321,
           algorithm: "SR25519",
         })
-      ).rejects.toThrow(VerificationError);
-
+      ).rejects.toThrow(OptionsVerificationError);
     }
   );
 });
