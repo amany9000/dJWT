@@ -24,7 +24,7 @@ const config = {
       format: "esm",
     },
   ].map(createOutput),
-  plugins: [typescript(), nodeResolve(), commonjs()],
+  plugins: [typescript(), nodeResolve({ preferBuiltins: false }), commonjs()],
 };
 
 export default config;
