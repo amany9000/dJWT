@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/amany9000/dJWT#readme",
   "dependencies": {
+    "buffer": "^6.0.3",
     "ms": "^2.1.3",
     "zod": "^3.22.4"
   },
