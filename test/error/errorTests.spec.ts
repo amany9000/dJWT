@@ -9,7 +9,7 @@ import {
 } from "../sharedFixtures";
 import { expect, describe, it } from "@jest/globals";
 
-import type { Signer, Verifier } from "../../src";
+import type { Signer, Verifier, SignOptions } from "../../src";
 import {
   sign,
   verify,
@@ -79,6 +79,7 @@ describe("Test errors for for verification: verify()", () => {
       verifyBitcoin as Verifier,
       "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk",
       "ES256k",
+      false
     ],
   ])(
     "Verification fails because of incorrect options.algorithm, Signer: %p",
@@ -86,7 +87,8 @@ describe("Test errors for for verification: verify()", () => {
       signFunc: Signer,
       verifierFunc: Verifier,
       address: string,
-      algorithm: string
+      algorithm: string,
+      isHexSig: boolean = true
     ) => {
       const payload = {
         nonce: 654321,
@@ -94,11 +96,17 @@ describe("Test errors for for verification: verify()", () => {
         exp: 1782098690,
         iss: address,
       };
-      const token = await sign(payload, signFunc, { algorithm });
+
+      const signOptions: Partial<SignOptions> &
+      (Pick<SignOptions, "header"> | Pick<SignOptions, "algorithm">) = { header: { alg: algorithm } }
+
+      if (!isHexSig)
+        signOptions.sigEncoding = "utf8";
+
+      const token = await sign(payload, signFunc, signOptions);
       expect(token).not.toBe(void 0);
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
-
 
       expect(
         async () => await verify(token, verifierFunc, {

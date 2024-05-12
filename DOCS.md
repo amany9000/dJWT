@@ -12,7 +12,7 @@ npm install djwt
 
 (Asynchronous) Return a JSON Web Token (string) after signing the `payload.header` with the signer().
 
-**Parameters**
+**Parameters** 
 
 | parameter    | required/optional | type | description |
 |    :---:     |     :---:      |     :---:     |     :---:     |

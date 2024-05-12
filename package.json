@@ -11,7 +11,8 @@
   "scripts": {
     "test": "jest",
     "build": "rollup -c",
-    "prepublish:public": "npm run build",
+    "prepublish:public:patch": "npm run build",
+    "prepublish:public:minor": "npm run build",
     "publish:public:patch": "npm version patch --force && npm publish --access public",
     "publish:public:minor": "npm version minor --force && npm publish --access public",
     "publish:public": "npm run publish:public:patch"

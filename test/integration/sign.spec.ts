@@ -8,7 +8,7 @@ import {
 import { sign } from "../../src";
 import { expect, describe, it } from "@jest/globals";
 
-import type { Signer } from "../../src";
+import type { Payload, Signer, SignOptions } from "../../src";
 
 describe("Test for signing: sign()", () => {
   it.each([
@@ -46,19 +46,27 @@ describe("Test for signing: sign()", () => {
       "5F7MBfGdyTg5th5gzsWMUyaVBRUkhEZw5Q82rPrtSP1q9F3E",
       "SR25519",
     ],
-    [signBitcoin, "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk", "ES256k"],
+    [signBitcoin, "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk", "ES256k", false],
   ])(
     "sign with %p with header in options instead of algorithm",
-    async (signFunc: Signer, address: string, algorithm: string) => {
+    async (signFunc: Signer, address: string, algorithm: string, isHexSig: boolean = true) => {
+
+      const payload: Payload = {
+        nonce: 654321,
+        iat: 1582062696,
+        exp: 1782098690,
+        iss: address,
+      }
+      const signOptions: Partial<SignOptions> &
+        (Pick<SignOptions, "header"> | Pick<SignOptions, "algorithm">) = { header: { alg: algorithm } }
+
+      if (!isHexSig)
+        signOptions.sigEncoding = "utf8";
+
       const token = await sign(
-        {
-          nonce: 654321,
-          iat: 1582062696,
-          exp: 1782098690,
-          iss: address,
-        },
+        payload,
         signFunc,
-        { header: { alg: algorithm } }
+        signOptions
       );
 
       expect(token).not.toBe(void 0);
