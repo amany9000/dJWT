@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { decode } from "./decode";
+import { decodeJWT } from "./decode";
 import { timespan } from "./utils";
 import { jwsVerify } from "./jws";
 import {
@@ -14,7 +14,7 @@ import { verifyOptionsSchema, headerSchema, payloadSchema } from "./schemas";
 
 import type { VerifyOptions, Verifier, TokenOrPayload } from "./types";
 
-export async function verify(
+export async function verifyJWT(
   jwtString: string,
   verifier: Verifier,
   options?: Partial<VerifyOptions>
@@ -43,7 +43,7 @@ export async function verify(
   const clockTimestamp =
     options.clockTimestamp || Math.floor(Date.now() / 1000);
 
-  const decodedToken = decode(jwtString, {
+  const decodedToken = decodeJWT(jwtString, {
     complete: true,
     sigEncoding: options.sigEncoding
   });

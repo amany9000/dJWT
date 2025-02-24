@@ -8,7 +8,7 @@ npm install djwt
 
 ## **Functions**:
 
-### **`async function sign(payload: Payload, signer: Signer, options Partial<SignOptions>) : Promise<string>`**
+### **`async function signJWT(payload: Payload, signer: Signer, options Partial<SignOptions>) : Promise<string>`**
 
 (Asynchronous) Return a JSON Web Token (string) after signing the `payload.header` with the signer().
 
@@ -65,7 +65,7 @@ async function test() {
     jti: "324221",
     aud: ["0x75FaBc80c774614C424ffC1d7017b4a534607935"]
   };
-  const token = await sign(payload, metamaskSign, { algorithm });
+  const token = await signJWT(payload, metamaskSign, { algorithm });
 }
 
 // metamaskSign.ts
@@ -79,7 +79,7 @@ function metamaskSign(message: string): string{
 
 ```
 
-### **`function verify(jwtString: string, verifier: Verifier, options?: Partial<VerifyOptions>): TokenOrPayload `**
+### **`function verifyJWT(jwtString: string, verifier: Verifier, options?: Partial<VerifyOptions>): TokenOrPayload `**
 
 Verifies the JWT string for claims and signature and returns the entire token object or just the payload object. Signature verification is done using the `verifier` function.
 
@@ -131,7 +131,7 @@ Returns the either the `Token` object if `options.complete=true` otherwise just 
   const address = "0x145831eba8085d78c1d30A9C108aAD8A1501d6e0";
   const algorithm = "ES256k";
 
-  const receivedToken = verify(tokenString, verifyMessage, {
+  const receivedToken = verifyJWT(tokenString, verifyMessage, {
     complete: true,
     nonce: 654321,
     maxAge: 10000000000,
@@ -144,7 +144,7 @@ Returns the either the `Token` object if `options.complete=true` otherwise just 
 ```
 
 
-### **`function decode(jwtString: string, options?: Partial<DecodeOptions>): TokenOrPayload`**
+### **`function decodeJWT(jwtString: string, options?: Partial<DecodeOptions>): TokenOrPayload`**
 
 Decodes the JWT string.
 
@@ -168,5 +168,5 @@ Returns the either the `Token` object if `options.complete=true` otherwise just 
 
 **Example**
 ```js
-  const payloadDecoded = decode(tokenString);
+  const payloadDecoded = decodeJWT(tokenString);
 ```

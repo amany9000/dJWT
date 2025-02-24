@@ -5,7 +5,7 @@ import {
   signBitcoin,
   metamaskSign,
 } from "../sharedFixtures";
-import { sign } from "../../src";
+import { signJWT } from "../../src";
 import { expect, describe, it } from "@jest/globals";
 
 import type { Payload, Signer, SignOptions } from "../../src";
@@ -22,7 +22,7 @@ describe("Test for signing: sign()", () => {
   ])(
     "sign with %p",
     async (signFunc: Signer, address: string, algorithm: string) => {
-      const token = await sign(
+      const token = await signJWT(
         {
           nonce: 654321,
           iat: 1582062696,
@@ -63,7 +63,7 @@ describe("Test for signing: sign()", () => {
       if (!isHexSig)
         signOptions.sigEncoding = "utf8";
 
-      const token = await sign(
+      const token = await signJWT(
         payload,
         signFunc,
         signOptions

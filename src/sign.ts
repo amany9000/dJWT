@@ -5,7 +5,7 @@ import { InvalidPayloadError, InvalidSignOptionsError } from "./errors";
 
 import type { SignOptions, Payload, Header, Signer } from "./types";
 
-export async function sign(
+export async function signJWT(
   payload: Payload,
   signer: Signer,
   options: Partial<SignOptions> &

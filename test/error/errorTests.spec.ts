@@ -11,8 +11,8 @@ import { expect, describe, it } from "@jest/globals";
 
 import type { Signer, Verifier, SignOptions } from "../../src";
 import {
-  sign,
-  verify,
+  signJWT,
+  verifyJWT,
   InvalidSignOptionsError,
   OptionsVerificationError,
 } from "../../src";
@@ -29,7 +29,7 @@ describe("Test for error: sign()", () => {
     "Fails due to expiresIn provided in signOption along with payload.exp, Signer: %p",
     async (signFunc: Signer, address: string, algorithm: string) => {
       expect(
-        sign(
+        signJWT(
           {
             nonce: 654321,
             iat: 1582062696,
@@ -51,7 +51,7 @@ describe("Test for error: sign()", () => {
     "Fails due to expiresIn provided in signOption along with payload.exp, Signer: %p",
     async (signFunc: Signer, address: string, algorithm: string) => {
       expect(
-        sign(
+        signJWT(
           {
             nonce: 654321,
             iat: 1582062696,
@@ -103,13 +103,13 @@ describe("Test errors for for verification: verify()", () => {
       if (!isHexSig)
         signOptions.sigEncoding = "utf8";
 
-      const token = await sign(payload, signFunc, signOptions);
+      const token = await signJWT(payload, signFunc, signOptions);
       expect(token).not.toBe(void 0);
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
       expect(
-        async () => await verify(token, verifierFunc, {
+        async () => await verifyJWT(token, verifierFunc, {
           complete: true,
           nonce: 654321,
           algorithm: "SR25519",

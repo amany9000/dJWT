@@ -5,7 +5,7 @@ import {
   signBitcoin,
   metamaskSign,
 } from "../sharedFixtures";
-import { sign, decode } from "../../src";
+import { signJWT, decodeJWT } from "../../src";
 import { expect, describe, it } from "@jest/globals";
 
 import type { Signer, SignOptions } from "../../src";
@@ -34,7 +34,7 @@ describe("Test for decoding: decode()", () => {
         aud: ["0x75FaBc80c774614C424ffC1d7017b4a534607935"]
       };
 
-      const token = await sign(
+      const token = await signJWT(
         payload,
         signFunc,
         { algorithm }
@@ -44,7 +44,7 @@ describe("Test for decoding: decode()", () => {
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      const decodedToken = decode(token, {
+      const decodedToken = decodeJWT(token, {
         complete: true
       });
 
@@ -86,7 +86,7 @@ describe("Test for decoding: decode()", () => {
       if (!isHexSig)
         signOptions.sigEncoding = "utf8";
 
-      const token = await sign(
+      const token = await signJWT(
         payload,
         signFunc,
         signOptions
@@ -96,7 +96,7 @@ describe("Test for decoding: decode()", () => {
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      const payloadDecoded = decode(token);
+      const payloadDecoded = decodeJWT(token);
 
       expect(payloadDecoded).toBeDefined();
       expect(typeof payloadDecoded).toBe("object");

@@ -3,7 +3,7 @@ import { TokenOrPayload, DecodeOptions } from "./types";
 import { VerificationError } from "./errors";
 import { decodeOptionsSchema } from "./schemas";
 
-export function decode(
+export function decodeJWT(
   jwtString: string,
   options?: Partial<DecodeOptions>
 ): TokenOrPayload {

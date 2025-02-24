@@ -9,7 +9,7 @@ import {
   metamaskSign,
   metamaskVerify,
 } from "../sharedFixtures";
-import { sign, verify } from "../../src";
+import { signJWT, verifyJWT } from "../../src";
 import { expect, describe, it } from "@jest/globals";
 import * as ethers from "ethers";
 import { Signer, Verifier } from "../../src";
@@ -85,12 +85,12 @@ describe("Test for verification: verify()", () => {
         verifyOption.sigEncoding = "utf8";
       }
 
-      const token = await sign(payload, signFunc, signOptions);
+      const token = await signJWT(payload, signFunc, signOptions);
       expect(token).not.toBe(void 0);
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      const receivedToken = await verify(token, verifierFunc, verifyOption);
+      const receivedToken = await verifyJWT(token, verifierFunc, verifyOption);
       expect(receivedToken.payload).toMatchObject(payload);
       expect(receivedToken.signature).toBeDefined();
       expect(typeof receivedToken.signature).toBe("string");
@@ -135,12 +135,12 @@ describe("Test for verification: verify()", () => {
         jti: "324221",
         aud: ["0x75FaBc80c774614C424ffC1d7017b4a534607935"],
       };
-      const token = await sign(payload, signFunc, { algorithm });
+      const token = await signJWT(payload, signFunc, { algorithm });
       expect(token).not.toBe(void 0);
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      const receivedToken = await verify( token, verifierFunc, {
+      const receivedToken = await verifyJWT( token, verifierFunc, {
         complete: true,
         nonce: 654321,
         maxAge: 10000000000,
@@ -194,12 +194,12 @@ describe("Test for verification: verify()", () => {
         jti: "324221",
         aud: ["0x75FaBc80c774614C424ffC1d7017b4a534607935"],
       };
-      const token = await sign(payload, signFunc, { algorithm });
+      const token = await signJWT(payload, signFunc, { algorithm });
       expect(token).not.toBe(void 0);
       expect(typeof token).toBe("string");
       expect(token.split(".").length).toBe(3);
 
-      const receivedPayload = await verify(token, verifierFunc, {
+      const receivedPayload = await verifyJWT(token, verifierFunc, {
         nonce: 654321,
         maxAge: 10000000000,
         issuer: address,
