@@ -25,6 +25,10 @@ const config = {
     },
   ].map(createOutput),
   plugins: [typescript(), nodeResolve({ preferBuiltins: false }), commonjs()],
+  external: [
+    ...Object.keys(pkg.dependencies || {}),        // Exclude dependencies
+    ...Object.keys(pkg.devDependencies || {}),    // Exclude peerDependencies
+]
 };
 
 export default config;

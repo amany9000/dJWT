@@ -36,10 +36,10 @@ export const payloadSchema = z.object({
     .optional(),
   aud: z
     .union([
-      z.string().min(1, ),
+      z.string().min(1,),
       z
         .array(z.string())
-        .min(1, 
+        .min(1,
           "Audience (aud) claim, if provided, has to be a non-empty string or an array of string."
         ),
     ])
@@ -55,16 +55,16 @@ export const signOptionsSchema = z.object({
     .string({ invalid_type_error: "Algorithm has to be a string" })
     .min(1, "options.algorithm has to be provided."),
   header: headerSchema,
-  encoding: z
+  sigEncoding: z
     .string()
-    .min(1, "encoding, if provided, has to be a non-empty string."),
+    .min(1, "sigEncoding, if provided, has to be a non-empty string."),
   noTimestamp: z.boolean(),
   expiresIn: z
     .union([
       z.number().positive(),
       z
         .string()
-        .min(1, 
+        .min(1,
           'options.expiresIn, if provided, has to be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
         ),
     ]),
@@ -73,7 +73,7 @@ export const signOptionsSchema = z.object({
       z.number().positive(),
       z
         .string()
-        .min(1, 
+        .min(1,
           'options.notBefore, if provided, has to be a number of seconds or string representing a timespan eg: "1d", "20h", 60'
         ),
     ]),

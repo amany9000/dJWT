@@ -8,7 +8,7 @@ import {
 import { sign, decode } from "../../src";
 import { expect, describe, it } from "@jest/globals";
 
-import type { Signer } from "../../src";
+import type { Signer, SignOptions } from "../../src";
 
 describe("Test for decoding: decode()", () => {
   it.each([
@@ -35,7 +35,7 @@ describe("Test for decoding: decode()", () => {
       };
 
       const token = await sign(
-				payload,
+        payload,
         signFunc,
         { algorithm }
       );
@@ -50,7 +50,7 @@ describe("Test for decoding: decode()", () => {
 
       expect(decodedToken).toBeDefined();
       expect(typeof decodedToken).toBe("object");
-      
+
       expect(decodedToken!.signature).toBeDefined();
       expect(decodedToken!.payload).toMatchObject(payload);
       expect(typeof decodedToken!.signature).toBe("string");
@@ -65,10 +65,10 @@ describe("Test for decoding: decode()", () => {
       "5F7MBfGdyTg5th5gzsWMUyaVBRUkhEZw5Q82rPrtSP1q9F3E",
       "SR25519",
     ],
-    [signBitcoin, "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk", "ES256k"]
+    [signBitcoin, "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk", "ES256k", false]
   ])(
     "Partial decode with %p.3",
-    async (signFunc: Signer, address: string, algorithm: string) => {
+    async (signFunc: Signer, address: string, algorithm: string, isHexSig: boolean = true) => {
       const payload = {
         nonce: 654321,
         iat: 1582062696,
@@ -80,10 +80,16 @@ describe("Test for decoding: decode()", () => {
         aud: ["0x75FaBc80c774614C424ffC1d7017b4a534607935"]
       };
 
+      const signOptions: Partial<SignOptions> &
+        (Pick<SignOptions, "header"> | Pick<SignOptions, "algorithm">) = { header: { alg: algorithm } }
+
+      if (!isHexSig)
+        signOptions.sigEncoding = "utf8";
+
       const token = await sign(
-				payload,
+        payload,
         signFunc,
-        { algorithm }
+        signOptions
       );
 
       expect(token).not.toBe(void 0);

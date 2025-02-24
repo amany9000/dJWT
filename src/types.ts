@@ -1,13 +1,18 @@
 export type SignOptions = {
   algorithm: string;
   header: Header;
-  encoding: BufferEncoding;
+  sigEncoding: BufferEncoding;
   noTimestamp: boolean;
   expiresIn: number | string;
   notBefore: number | string;
 };
 
-export type VerifyOptions = {
+export type DecodeOptions = {
+  sigEncoding: BufferEncoding;
+  complete: boolean;
+};
+
+export type VerifyOptions =  DecodeOptions & {
   audience: string | string[];
   issuer: string | string[];
   subject: string;
@@ -18,7 +23,6 @@ export type VerifyOptions = {
   clockTolerance: number;
   ignoreExpiration: number;
   maxAge: number | string;
-  complete: boolean;
   algorithm: string;
 };
 
@@ -43,24 +47,7 @@ export type Token = {
   signature: string;
 };
 
-export type TokenOrPayload = Partial<{
-  header: Header;
-  payload: Payload;
-  signature: string;
-  iss: string;
-  nonce: number;
-  exp: number;
-  iat: number;
-  nbf: number;
-  sub: string;
-  jti: string;
-  aud: string | string[];
-}>;
-
-export type DecodeOptions = {
-  encoding: BufferEncoding;
-  complete: boolean;
-};
+export type TokenOrPayload = Partial<Token & Payload>;
 
 export interface Signer {
   (payload: string): Promise<string> | string;

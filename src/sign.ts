@@ -25,6 +25,9 @@ export async function sign(
     );
   }
 
+  // Default encoding values
+  const sigEncoding = options.sigEncoding || "hex";
+
   let header: Header | undefined = options.header;
 
   if (!header) {
@@ -62,7 +65,5 @@ export async function sign(
     } else payload.nbf = timespan(options.notBefore, timestamp);
   }
 
-  const encoding = options.encoding || "utf8";
-
-  return signJws(header, payload, signer, encoding as BufferEncoding);
+  return signJws(header, payload, signer, sigEncoding as BufferEncoding);
 }

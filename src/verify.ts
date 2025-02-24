@@ -43,7 +43,10 @@ export async function verify(
   const clockTimestamp =
     options.clockTimestamp || Math.floor(Date.now() / 1000);
 
-  const decodedToken = decode(jwtString, { complete: true });
+  const decodedToken = decode(jwtString, {
+    complete: true,
+    sigEncoding: options.sigEncoding
+  });
 
   if (!decodedToken) {
     throw new VerificationError("Invalid token");
@@ -165,7 +168,7 @@ export async function verify(
         "JWT ID invalid.",
         payload.jti ? payload.jti : "undefined",
         options.jwtid
-      );    
+      );
     }
   }
 
@@ -195,7 +198,7 @@ export async function verify(
     }
   }
 
-  const valid = await jwsVerify(verifier, jwtString, decodedToken.payload.iss);
+  const valid = await jwsVerify(verifier, jwtString, decodedToken.payload.iss, options.sigEncoding);
 
   if (!valid) {
     throw new VerificationError("Invalid signature");

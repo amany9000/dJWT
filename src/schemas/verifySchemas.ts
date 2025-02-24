@@ -3,18 +3,18 @@ import { z } from "zod";
 export const verifyOptionsSchema = z
   .object({
     audience: z.union([
-      z.string().min(1, ),
+      z.string().min(1,),
       z
         .array(z.string())
-        .min(1, 
+        .min(1,
           "options.audience, if provided, has to be a non-empty string or an array of string."
         ),
     ]),
     issuer: z.union([
-      z.string().min(1, ),
+      z.string().min(1,),
       z
         .array(z.string())
-        .min(1, 
+        .min(1,
           "options.issuer, if provided, has to be a non-empty string or an array of string."
         ),
     ]),
@@ -51,13 +51,29 @@ export const verifyOptionsSchema = z
       .number()
       .positive("options.maxAge, if provided, has to be a positive number."),
     complete: z.boolean({
-      invalid_type_error: "options.complete, if provided, has to be a boolean",
+      invalid_type_error: "options.complete, if provided, has to be a boolean"
     }),
+    sigEncoding: z
+      .string()
+      .min(1, "sigEncoding, if provided, has to be a non-empty string."),
     algorithm: z
       .string()
-      .min(1, 
+      .min(1,
         "options.algorithm, if provided, has to be a non-empty string."
       ),
+  })
+  .partial()
+  .strict();
+
+
+export const decodeOptionsSchema = z
+  .object({
+    complete: z.boolean({
+      invalid_type_error: "options.complete, if provided, has to be a boolean"
+    }),
+    sigEncoding: z
+      .string()
+      .min(1, "sigEncoding, if provided, has to be a non-empty string.")
   })
   .partial()
   .strict();

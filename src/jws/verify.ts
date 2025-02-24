@@ -33,19 +33,22 @@ function securedInputFromJWS(jwsSig: string): string {
   return jwsSig.split(".", 2).join(".");
 }
 
-function signatureFromJWS(jwsSig: string, encoding?: BufferEncoding): string {
-  encoding = encoding || "utf8";
+function signatureFromJWS(jwsSig: string, sigEncoding: BufferEncoding = 'hex'): string {
   const sig = jwsSig.split(".")[2];
 
-  if (sig) return Buffer.from(sig, "base64").toString(encoding);
+  if (sig){
+    const signature = Buffer.from(sig, "base64").toString(sigEncoding);
+    const returnValue = sigEncoding === 'hex' ? '0x' + signature : signature;
+
+    return returnValue;
+  }
   throw new JwsDecodingError("Signature not present in token", jwsSig);
 }
 
-function payloadFromJWS(jwsSig: string, encoding?: BufferEncoding): string {
-  encoding = encoding || "utf8";
+function payloadFromJWS(jwsSig: string): string {
   let payload = jwsSig.split(".")[1];
 
-  if (payload) return Buffer.from(payload, "base64").toString(encoding);
+  if (payload) return Buffer.from(payload, "base64").toString('utf-8');
   else throw new JwsDecodingError("Error decoding jws", jwsSig);
 }
 
@@ -56,16 +59,17 @@ export function isValidJws(string: string): boolean {
 export async function jwsVerify(
   verifier: Verifier,
   jwsSig: string,
-  address: string
+  address: string,
+  sigEncoding?: BufferEncoding
 ): Promise<boolean> {
-  let signature = signatureFromJWS(jwsSig);
+  let signature = signatureFromJWS(jwsSig, sigEncoding);
   let securedInput = securedInputFromJWS(jwsSig);
   return jwaVerify(verifier, securedInput, signature, address);
 }
 
 export function decodeJws(
   jwsSig: string,
-  encoding: BufferEncoding = "utf8"
+  sigEncoding?: BufferEncoding
 ): Token {
   if (!isValidJws(jwsSig))
     throw new JwsDecodingError("JWT doesn't pass regex", jwsSig);
@@ -77,6 +81,6 @@ export function decodeJws(
   return {
     header: header,
     payload: payload,
-    signature: signatureFromJWS(jwsSig, encoding),
+    signature: signatureFromJWS(jwsSig, sigEncoding),
   };
 }

@@ -13,6 +13,7 @@ import { sign, verify } from "../../src";
 import { expect, describe, it } from "@jest/globals";
 import * as ethers from "ethers";
 import { Signer, Verifier } from "../../src";
+import type { SignOptions, VerifyOptions } from "../../src";
 
 describe("Test for verification: verify()", () => {
   it.each([
@@ -39,6 +40,7 @@ describe("Test for verification: verify()", () => {
       verifyBitcoin as Verifier,
       "1HZwtseQ9YoRteyAxzt6Zq43u3Re5JKPbk",
       "ES256k",
+      false
     ],
     [
       metamaskSign,
@@ -52,7 +54,8 @@ describe("Test for verification: verify()", () => {
       signFunc: Signer,
       verifierFunc: Verifier,
       address: string,
-      algorithm: string
+      algorithm: string,
+      isHexSig: boolean = true
     ) => {
       const payload = {
         nonce: 654321,
@@ -63,12 +66,11 @@ describe("Test for verification: verify()", () => {
         sub: address,
         jti: "324221",
       };
-      const token = await sign(payload, signFunc, { algorithm });
-      expect(token).not.toBe(void 0);
-      expect(typeof token).toBe("string");
-      expect(token.split(".").length).toBe(3);
 
-      const receivedToken = await verify(token, verifierFunc, {
+      const signOptions: Partial<SignOptions> &
+      (Pick<SignOptions, "header"> | Pick<SignOptions, "algorithm">) = { header: { alg: algorithm } }
+
+      const verifyOption : Partial<VerifyOptions>  = {
         complete: true,
         nonce: 654321,
         maxAge: 10000000000,
@@ -76,7 +78,19 @@ describe("Test for verification: verify()", () => {
         jwtid: "324221",
         subject: address,
         algorithm,
-      });
+      }
+      
+      if (!isHexSig){
+        signOptions.sigEncoding = "utf8";
+        verifyOption.sigEncoding = "utf8";
+      }
+
+      const token = await sign(payload, signFunc, signOptions);
+      expect(token).not.toBe(void 0);
+      expect(typeof token).toBe("string");
+      expect(token.split(".").length).toBe(3);
+
+      const receivedToken = await verify(token, verifierFunc, verifyOption);
       expect(receivedToken.payload).toMatchObject(payload);
       expect(receivedToken.signature).toBeDefined();
       expect(typeof receivedToken.signature).toBe("string");

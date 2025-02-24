@@ -9,6 +9,17 @@ export class JwsDecodingError extends BaseDjwtError {
   }
 }
 
+export class JwsEncodingError extends BaseDjwtError {
+  public jwt?: string;
+
+  public constructor(message: string, token?: string) {
+    super(
+      message + ` ${token}`
+    );
+  this.jwt = token;
+  }
+}
+
 export class JwsVerifyError extends BaseDjwtError {
 
 	public constructor(message : string) {
