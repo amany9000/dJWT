@@ -20,9 +20,9 @@
   
 </div>
 
-![Logo](./img/djwt-logo.jpeg)
-
 ---
+
+![Logo](./img/djwt-logo.jpeg)
 
 <br />
 
@@ -30,7 +30,7 @@
 
 A general purpose, Digital Signature-agnostic JWT implementation. You can plug in any Digital Signature Algorithm (DSA) using the correct [Signer](https://github.com/amany9000/dJWT/blob/28a64bd25247d4a37eb116208b31be7253a90df2/src/types.ts#L52) and [Verifier](https://github.com/amany9000/dJWT/blob/28a64bd25247d4a37eb116208b31be7253a90df2/src/types.ts#L56) interfaces.
 
-Compatibile with the current (ECDSA/RSA) and [post-quantum](https://github.com/amany9000/post-quantum-jwt) Digital Signature Schemes (Dilithium/SPHINCS+). Tested for several [major blockchains](./examples): EVM-based(ethers/metamask), Polkadot, Bitcoin.
+Compatibile with the current (ECDSA/RSA) and [post-quantum](https://github.com/amany9000/post-quantum-jwt) Digital Signature Schemes (Dilithium/SPHINCS+). Tested for several [major blockchains](./examples): EVM-based(ethers/metamask), Polkadot and Bitcoin.
 
 ## Installation
 
@@ -42,15 +42,15 @@ npm install djwt
 
 These DLT Packages/Wallets have been tested with djwt->>>>
 
-- [Web3.js](https://github.com/ethereum/web3.js)
 - [Ethers.js](https://github.com/ethers-io/ethers.js)
+- [Web3.js](https://github.com/ethereum/web3.js)
 - [Polkadot.js](https://github.com/polkadot-js)
 - [Bitcoinjs](https://github.com/bitcoinjs/bitcoinjs-lib)
 - [Metamask](https://github.com/metamask)
 
 ## Post-Quantum DSA
 
-As post-quantum algorithms are in their infancy right now, their landscape is changing constantly with new implementations coming in every year. Hence, djwt's Pluggable DSA is very useful in implementing these future-proof JWTs.
+As post-quantum algorithms are in infancy right now, their landscape is constantly changing with new implementations coming in every year. Hence, djwt's Pluggable DSA is very useful in implementing these future-proof JWTs.
 
 The [post-quantum-jwt](https://github.com/amany9000/post-quantum-jwt) POC showcases djwt's compatibility with Post-Quantum DSAs. It utilises [noble-post-quantum](https://github.com/paulmillr/noble-post-quantum) in the backgroud to implement the following DSA Schemes:
 
